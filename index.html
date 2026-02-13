@@ -16,7 +16,10 @@
         html { 
             scroll-snap-type: y mandatory; 
             scroll-behavior: smooth; 
-            touch-action: pan-y; 
+            touch-action: pan-y;
+            /* FIX FIREFOX REFRESH: Disabilita il rimbalzo e il refresh nativo */
+            overscroll-behavior: none; 
+            height: 100%;
         }
         
         body { 
@@ -27,6 +30,8 @@
             transition: background-color 0.4s ease; 
             user-select: none; 
             width: 100vw;
+            overscroll-behavior: none; /* Rinforzo per Chrome/Safari */
+            position: relative;
         }
 
         /* --- SIGNATURE (B.T.) --- */
@@ -45,14 +50,11 @@
             transition: width 0.3s ease, height 0.3s ease, transform 0.15s ease-out; transform: translate(-50%, -50%);
             left: -100px; top: -100px;
         }
-        #custom-cursor.active { 
-            width: 22px; height: 22px; 
-            animation: wave 0.6s infinite ease-in-out; 
-        }
+        #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
         
-        /* FIX: Nasconde totalmente il cursore su dispositivi touch */
+        /* Nasconde cursore su touch */
         @media (pointer: coarse), (hover: none) { 
-            #custom-cursor { display: none !important; opacity: 0 !important; visibility: hidden; } 
+            #custom-cursor { display: none !important; opacity: 0; visibility: hidden; } 
         }
 
         @keyframes wave {
@@ -86,16 +88,18 @@
                 -ms-overflow-style: none; scrollbar-width: none; 
             }
             nav::-webkit-scrollbar { display: none; }
-            
             .nav-group { display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.3s ease; }
             .sub-nav { display: none; }
-            .main-link { font-size: 0.75rem !important; opacity: 0.4 !important; white-space: nowrap; }
+            .main-link { opacity: 0.4 !important; white-space: nowrap; }
             .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.15); font-weight: 900; }
             .nav-group.active .main-link::before { width: 100%; height: 2px; position: absolute; bottom: -5px; left: 0; }
         }
 
+        /* --- HIERARCHY FIX: SIZES --- */
         .main-link { 
-            color: var(--fg-color); text-decoration: none; font-size: 0.75rem; font-weight: 900; 
+            color: var(--fg-color); text-decoration: none; 
+            font-size: 0.85rem; /* Aumentato per contrasto */
+            font-weight: 900; 
             text-transform: uppercase; letter-spacing: 2px; opacity: 0.2; 
             display: flex; align-items: center; gap: 12px; transition: 0.4s; position: relative;
         }
@@ -105,8 +109,16 @@
             .nav-group.active .main-link { opacity: 1 !important; transform: translateX(5px); }
             .nav-group.active .main-link::before { width: 25px; }
         }
+        
+        /* Mobile Main Link Size adjustment */
+        @media (max-width: 768px) { .main-link { font-size: 0.8rem !important; } }
 
-        .sub-link { color: var(--fg-color); text-decoration: none; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; }
+        .sub-link { 
+            color: var(--fg-color); text-decoration: none; 
+            font-size: 0.6rem; /* Mantenuto piccolo */
+            font-weight: 500; /* Peso ridotto per differenziare */
+            text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; 
+        }
         .sub-link:hover { opacity: 0.8 !important; transform: translateX(3px); }
         .sub-link.active { opacity: 1 !important; font-weight: 700; }
 
@@ -114,25 +126,14 @@
         .char { display: inline-block; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .char:hover { transform: translateY(-4px) rotate(2deg); color: inherit; }
 
-        /* Stile base del titolo */
         h1.monumental { 
             font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; 
         }
-        
-        /* Regola per evitare lo split delle parole */
         h1.monumental div { white-space: nowrap; }
 
         @media (min-width: 769px) { h1.monumental { font-size: 7.5rem; letter-spacing: -5px; } }
-        
-        /* FIX MOBILE: Font ridotto a 10vw e line-height ottimizzato per evitare tagli */
         @media (max-width: 768px) { 
-            h1.monumental { 
-                font-size: 10vw; 
-                letter-spacing: -1px; 
-                margin: 10px 0; 
-                width: 95vw; /* Assicura che stia nel viewport */
-                margin-left: auto; margin-right: auto;
-            } 
+            h1.monumental { font-size: 10vw; letter-spacing: -1px; margin: 10px 0; width: 95vw; margin-left: auto; margin-right: auto; } 
         }
 
         em.italic-script { font-family: 'Georgia', serif; font-style: italic; display: block; }
@@ -165,11 +166,7 @@
 
         /* --- HINTS --- */
         .hint-vertical { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
-        
-        .hint-horizontal { 
-            position: absolute; right: 5vw; top: 60%; 
-            display: flex; align-items: center; gap: 15px; pointer-events: none; 
-        }
+        .hint-horizontal { position: absolute; right: 5vw; top: 60%; display: flex; align-items: center; gap: 15px; pointer-events: none; }
         @media (max-width: 768px) {
             .hint-horizontal { top: 70%; flex-direction: row; gap: 8px; right: 5vw; }
             .hint-horizontal span:first-child { display: block; font-size: 0.8rem; opacity: 0.8; } 
@@ -199,6 +196,7 @@
         .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
         .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
+        
         .snap-point { height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
         .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
         .cube-face.active-content { pointer-events: all; }
@@ -282,7 +280,6 @@
             const face = document.createElement('div'); face.className = 'cube-face';
             
             if (data.type === 'landing') {
-                // FIXED TITLE SPLIT: Each word in its own row, safe for mobile
                 face.innerHTML = `
                 <div class="horizontal-slider" id="main-slider">
                     <div class="panel">
@@ -317,7 +314,6 @@
             cube.appendChild(face);
         });
 
-        // Split text for animation
         document.querySelectorAll('.split-title').forEach(t => {
             const lines = t.innerHTML.split('<br>'); t.innerHTML = '';
             lines.forEach(l => {
@@ -330,10 +326,10 @@
             });
         });
 
-        // Logic
+        // --- INTERACTION LOGIC ---
         const slider = document.getElementById('main-slider');
         
-        // Mouse Events
+        // Mouse Events (PC)
         document.addEventListener('mousedown', (e) => { if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
@@ -344,7 +340,7 @@
             if (!isDragging) return; isDragging = false; finishSlide(e.clientX);
         });
 
-        // Touch Events with Trail
+        // Touch Events (Mobile) with Trail
         document.addEventListener('touchstart', (e) => {
             if (window.scrollY < vh * 0.5) { 
                 isDragging = false; startX = e.touches[0].clientX; startY = e.touches[0].clientY; slider.style.transition = 'none'; 
@@ -355,8 +351,7 @@
             const touchX = e.touches[0].clientX;
             const touchY = e.touches[0].clientY;
             
-            // GENERATE TRAIL EFFECT ON MOBILE TOUCH
-            spawnDroplets(touchX, touchY);
+            spawnDroplets(touchX, touchY); // Trail Effect
 
             const diffX = touchX - startX;
             const diffY = touchY - startY;
@@ -387,11 +382,12 @@
             if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect')) cursor.classList.remove('active');
         });
 
+        // Spawn on Click (PC) or Tap (Mobile)
         document.addEventListener('mousedown', (e) => spawnDroplets(e.clientX, e.clientY));
         
         function spawnDroplets(x, y) {
             const isMobile = window.innerWidth <= 768;
-            const count = isMobile ? 2 : 4; // More particles for trail effect on mobile
+            const count = isMobile ? 2 : 4; 
             
             for (let i = 0; i < count; i++) {
                 const d = document.createElement('div'); d.className = 'droplet'; document.body.appendChild(d);
@@ -431,9 +427,14 @@
                     if (Math.abs(off) < 0.5) {
                         face.classList.add('active-content'); const d = flatFaces[i];
                         if (d.type === 'final-call') {
-                            cursor.classList.add('active');
-                            if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
-                        } else { if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } }
+                            // FIX: Attiva particelle automatiche SOLO se c'è un mouse (PC)
+                            if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                                cursor.classList.add('active');
+                                if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
+                            }
+                        } else { 
+                            if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } 
+                        }
 
                         if (d && d.projectIdx !== undefined) {
                             document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('active'));
