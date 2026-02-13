@@ -74,10 +74,8 @@
                 bottom: 20px; left: 0; width: 100%; 
                 display: flex; flex-direction: row; gap: 20px; 
                 overflow-x: auto; padding: 10px 20px;
-                /* Rimuoviamo scroll-snap orizzontale per lasciare che il JS centri fluido */
                 justify-content: flex-start;
                 background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
-                /* Nascondi scrollbar */
                 -ms-overflow-style: none; scrollbar-width: none; 
             }
             nav::-webkit-scrollbar { display: none; }
@@ -85,10 +83,7 @@
             .nav-group { display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.3s ease; }
             .sub-nav { display: none; }
             .main-link { font-size: 0.75rem !important; opacity: 0.4 !important; white-space: nowrap; }
-            
-            /* Stato Attivo Mobile: Più grande e opaco */
             .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.15); font-weight: 900; }
-            /* Indicatore visivo attivo mobile */
             .nav-group.active .main-link::before { width: 100%; height: 2px; position: absolute; bottom: -5px; left: 0; }
         }
 
@@ -144,12 +139,27 @@
             .presentation-text p { font-size: 0.9rem; }
         }
 
-        /* --- HINTS --- */
+        /* --- HINTS (Fixed for Mobile Visibility) --- */
         .hint-vertical { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
-        .hint-horizontal { position: absolute; right: 5vw; top: 60%; display: flex; align-items: center; gap: 15px; pointer-events: none; }
+        
+        .hint-horizontal { 
+            position: absolute; right: 5vw; top: 60%; 
+            display: flex; align-items: center; gap: 15px; pointer-events: none; 
+        }
+        
         @media (max-width: 768px) {
-            .hint-horizontal { top: 75%; flex-direction: column; gap: 5px; }
-            .hint-horizontal span:first-child { display: none; }
+            .hint-horizontal { 
+                top: 70%; /* Regolato per non sovrapporsi */
+                flex-direction: row; 
+                gap: 8px; 
+                right: 5vw;
+            }
+            /* Forza la visualizzazione del testo su mobile */
+            .hint-horizontal span:first-child { 
+                display: block; 
+                font-size: 0.8rem;
+                opacity: 0.8;
+            } 
         }
         .arrow { font-size: 1.2rem; }
 
@@ -177,11 +187,10 @@
         .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
         
-        /* FIX SCROLL VELOCITY: scroll-snap-stop: always FORCE STOP */
         .snap-point { 
             height: 100vh; 
             scroll-snap-align: start; 
-            scroll-snap-stop: always; /* KEY FIX: Obbliga a fermarsi a ogni sezione */
+            scroll-snap-stop: always; 
             pointer-events: none; 
         }
         
