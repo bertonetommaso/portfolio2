@@ -81,6 +81,7 @@
         nav { position: fixed; z-index: 10000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
         nav.visible { opacity: 1; pointer-events: all; }
 
+        /* PC Style */
         @media (min-width: 769px) {
             nav { left: 20%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
             .nav-group { display: flex; flex-direction: column; gap: 8px; }
@@ -88,6 +89,7 @@
             .nav-group.active .sub-nav { max-height: 150px; margin-top: 5px; }
         }
 
+        /* Mobile Style */
         @media (max-width: 768px) {
             nav { 
                 bottom: 0; left: 0; width: 100%; display: flex; flex-direction: row; gap: 20px; 
@@ -189,13 +191,16 @@
         }
         @media (max-width: 768px) {
             .portfolio-content { top: 15%; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; }
-            /* MOBILE IMAGE SIZE FIX: Smaller (35vh) and No Overlap */
+            
+            /* --- FIXED: MOBILE IMAGE SIZE (40% SMALLER) --- */
             .image-container { 
-                top: 55%; /* Spostato più in alto */
+                top: 55%; 
                 left: 50%; transform: translate(-50%, -50%); 
-                width: 85vw; 
-                height: 35vh; /* Ridotto per evitare sovrapposizione frecce */
+                width: 55vw; /* Drastically Reduced from 85vw */
+                height: 22vh; /* Drastically Reduced from 35-50vh */
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             }
+            
             .portfolio-content h3 { font-size: 0.7rem; margin-bottom: 0.5rem; opacity: 0.6; font-weight: 500; }
             .portfolio-content h2 { font-size: 3rem; margin-bottom: 1rem; line-height: 1; }
             .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
@@ -267,6 +272,7 @@
         let vh = window.innerHeight;
         let mouseX = 0, mouseY = 0, excitedInterval = null;
         let startX = 0, startY = 0, isDragging = false, currentXOffset = 0;
+        let currentActiveGroup = null;
         
         // Mobile Physics
         let targetScrollY = 0;
@@ -286,6 +292,7 @@
         projects.forEach((proj, i) => {
             const group = document.createElement('div');
             group.className = 'nav-group'; group.id = `group-${i}`;
+            const mainIdx = 1 + (i * 4);
             const mLink = document.createElement('a');
             mLink.className = 'main-link'; mLink.href = "#"; mLink.innerHTML = `0${i+1} — ${proj.title}`;
             mLink.onclick = (e) => { e.preventDefault(); navigateTo(1 + i * 4); };
@@ -492,7 +499,16 @@
             mobUp.style.color = document.body.style.color;
             mobDown.style.color = document.body.style.color;
 
-            if (sY > vh * 0.4) navbar.classList.add('visible'); else navbar.classList.remove('visible');
+            // --- FIXED: AUTO-HIDE PC NAV ON LAST PAGE ---
+            const isAtEnd = sY > (flatFaces.length - 1.2) * vh; // Detect last page
+            const isPCLanding = sY > vh * 0.4;
+            
+            // Show only if NOT at end (for PC) or Always on Mobile if scrolled
+            if (isPCLanding && (!isAtEnd || isMobile())) {
+                navbar.classList.add('visible');
+            } else {
+                navbar.classList.remove('visible');
+            }
 
             const fcs = document.querySelectorAll('.cube-face');
             fcs.forEach((face, i) => {
@@ -528,15 +544,12 @@
                                     if (sl) sl.classList.add('active');
                                 }
                                 
-                                // AUTO-CENTER MOBILE NAVBAR
                                 if (isMobile()) {
                                     const nav = document.getElementById('navbar');
-                                    // Calcolo per centrare l'elemento attivo
                                     const navWidth = nav.offsetWidth;
                                     const elLeft = grp.offsetLeft;
                                     const elWidth = grp.offsetWidth;
                                     const scrollPos = elLeft - (navWidth / 2) + (elWidth / 2);
-                                    
                                     nav.scrollTo({ left: scrollPos, behavior: 'smooth' });
                                 }
                             }
