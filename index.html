@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>B.T. | Industrial Design Journal</title>
+    <style>
+        :root {
+            --bg-color: rgb(240, 240, 240);
+            --fg-color: rgb(40, 40, 40);
+            --vh: 100vh;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; -webkit-tap-highlight-color: transparent; }
+        html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--fg-color); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            transition: background-color 0.4s ease; 
+            user-select: none; 
+            width: 100vw;
+            overscroll-behavior-y: none; /* Previene rimbalzi su mobile */
+        }
+
+        /* --- SIGNATURE (B.T.) --- */
+        #signature-btn {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10005;
+            font-weight: 900; font-size: 1.2rem; letter-spacing: 4px; text-transform: uppercase;
+            pointer-events: all; white-space: nowrap; transition: filter 0.4s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0.5px 0px 0px currentColor; 
+        }
+        #signature-btn:hover { transform: translateX(-50%) scale(1.1); }
+
+        /* --- CURSORE (Nascosto su touch per pulizia, visibile su PC) --- */
+        #custom-cursor {
+            position: fixed; width: 18px; height: 18px; background-color: white; border-radius: 50%;
+            pointer-events: none; z-index: 10006; mix-blend-mode: difference;
+            transition: width 0.3s ease, height 0.3s ease, transform 0.15s ease-out; transform: translate(-50%, -50%);
+            left: -100px; top: -100px;
+        }
+        #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
+        @media (hover: none) { #custom-cursor { display: none; } } /* Nascondi su mobile */
+
+        @keyframes wave {
+            0%, 100% { border-radius: 50%; transform: translate(-50%, -50%) scale(1); }
+            50% { border-radius: 35% 65% 50% 50%; transform: translate(-51%, -49%) scale(1.05); }
+        }
+
+        .droplet {
+            position: fixed; width: 8px; height: 8px; background-color: white; border-radius: 50%; 
+            pointer-events: none; z-index: 10004; mix-blend-mode: difference; transform: translate(-50%, -50%);
+        }
+
+        /* --- SIDEBAR / NAVBAR --- */
+        nav { 
+            position: fixed; z-index: 10000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
+        }
+        nav.visible { opacity: 1; pointer-events: all; }
+
+        /* PC Layout */
+        @media (min-width: 769px) {
+            nav { left: 20%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
+            .nav-group { display: flex; flex-direction: column; gap: 8px; }
+            .sub-nav { max-height: 0; overflow: hidden; padding-left: 37px; display: flex; flex-direction: column; gap: 6px; transition: max-height 0.5s ease; }
+            .nav-group.active .sub-nav { max-height: 150px; margin-top: 5px; }
+        }
+
+        /* Mobile Layout (Bottom Bar) */
+        @media (max-width: 768px) {
+            nav { 
+                bottom: 20px; left: 0; width: 100%; 
+                display: flex; flex-direction: row; gap: 20px; 
+                overflow-x: auto; padding: 10px 20px;
+                scroll-snap-type: x mandatory;
+                justify-content: flex-start;
+                background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
+            }
+            .nav-group { display: flex; flex-direction: column; flex-shrink: 0; scroll-snap-align: start; }
+            .sub-nav { display: none; } /* Nascondi sottosezioni su mobile per spazio */
+            .main-link { font-size: 0.7rem !important; opacity: 0.5 !important; }
+            .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.1); }
+        }
+
+        .main-link { 
+            color: var(--fg-color); text-decoration: none; font-size: 0.75rem; font-weight: 900; 
+            text-transform: uppercase; letter-spacing: 2px; opacity: 0.2; 
+            display: flex; align-items: center; gap: 12px; transition: 0.4s; 
+        }
+        .main-link::before { content: ''; width: 12px; height: 2px; background: var(--fg-color); transition: 0.4s; }
+        .main-link:hover { opacity: 0.7 !important; }
+        .nav-group.active .main-link { opacity: 1 !important; transform: translateX(5px); }
+        .nav-group.active .main-link::before { width: 25px; }
+
+        .sub-link { 
+            color: var(--fg-color); text-decoration: none; font-size: 0.6rem; 
+            text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; 
+        }
+        .sub-link:hover { opacity: 0.8 !important; transform: translateX(3px); }
+        .sub-link.active { opacity: 1 !important; font-weight: 700; }
+
+        /* --- TYPOGRAPHY --- */
+        .char { display: inline-block; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .char:hover { transform: translateY(-4px) rotate(2deg); color: inherit; }
+
+        h1.monumental { 
+            font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; 
+        }
+        /* Responsive Font Sizes */
+        @media (min-width: 769px) { h1.monumental { font-size: 7.5rem; letter-spacing: -5px; } }
+        @media (max-width: 768px) { h1.monumental { font-size: 13vw; letter-spacing: -2px; } }
+
+        em.italic-script { font-family: 'Georgia', serif; font-style: italic; display: block; }
+        @media (min-width: 769px) { em.italic-script { font-size: 2rem; } }
+        @media (max-width: 768px) { em.italic-script { font-size: 1.2rem; } }
+
+        .italic-script-small { font-family: 'Georgia', serif; font-style: italic; font-size: 1rem; }
+
+        /* --- LAYOUT CONTAINERS --- */
+        .centered-container { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100vw; height: 100vh; padding: 20px; }
+
+        /* --- LANDING & PRESENTATION --- */
+        .horizontal-slider { display: flex; width: 200vw; height: 100vh; transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1); }
+        .panel { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; }
+
+        .presentation-content { 
+            display: flex; align-items: center; justify-content: center; 
+            width: 100vw; height: 100%; padding: 0 10%; 
+        }
+        .presentation-rect { border: 2px solid var(--fg-color); flex-shrink: 0; position: relative; }
+        .presentation-text { text-align: left; }
+
+        /* Responsive Presentation */
+        @media (min-width: 769px) {
+            .presentation-content { gap: 100px; }
+            .presentation-rect { width: 380px; height: 520px; }
+            .presentation-text h2 { font-size: 4rem; }
+        }
+        @media (max-width: 768px) {
+            .presentation-content { flex-direction: column-reverse; gap: 30px; justify-content: center; text-align: center; }
+            .presentation-rect { width: 60vw; height: 40vh; margin-top: 20px; }
+            .presentation-text { text-align: center; max-width: 90%; }
+            .presentation-text h2 { font-size: 2.5rem; margin-bottom: 10px; }
+            .presentation-text p { font-size: 0.9rem; }
+        }
+
+        /* --- LANDING HINTS --- */
+        .hint-vertical { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+        .hint-horizontal { position: absolute; right: 5vw; top: 60%; display: flex; align-items: center; gap: 15px; pointer-events: none; }
+        @media (max-width: 768px) {
+            .hint-horizontal { top: 75%; flex-direction: column; gap: 5px; }
+            .hint-horizontal span:first-child { display: none; } /* Nascondi testo su mobile se ingombra */
+        }
+        .arrow { font-size: 1.2rem; }
+
+        /* --- PORTFOLIO CONTENT --- */
+        .portfolio-content { position: absolute; z-index: 2; }
+        .image-container { position: absolute; background: #ddd; box-shadow: 0 40px 80px rgba(0,0,0,0.1); z-index: 1; }
+        .image-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* PC Portfolio Layout */
+        @media (min-width: 769px) {
+            .portfolio-content { left: 33vw; top: 50%; transform: translateY(-50%); max-width: 450px; text-align: left; }
+            .image-container { right: 5vw; top: 50%; transform: translateY(-50%); width: 420px; height: 580px; }
+            .portfolio-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+            .portfolio-content h2 { font-size: 5rem; margin-bottom: 1.5rem; }
+        }
+
+        /* Mobile Portfolio Layout (Stacked) */
+        @media (max-width: 768px) {
+            .portfolio-content { 
+                top: 15%; left: 50%; transform: translateX(-50%); 
+                width: 85%; text-align: center; 
+            }
+            .image-container { 
+                top: 55%; left: 50%; transform: translate(-50%, -50%); 
+                width: 80vw; height: 45vh; 
+            }
+            .portfolio-content h3 { font-size: 1rem; margin-bottom: 0.5rem; opacity: 0.6; }
+            .portfolio-content h2 { font-size: 3rem; margin-bottom: 1rem; line-height: 1; }
+            .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
+        }
+
+        /* --- ENGINE 3D --- */
+        .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
+        .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
+        .scroll-container { position: relative; z-index: 10; pointer-events: none; }
+        .snap-point { height: 100vh; scroll-snap-align: start; pointer-events: none; }
+        .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
+        .cube-face.active-content { pointer-events: all; }
+
+        /* --- FINAL BOXES --- */
+        .final-links { display: flex; gap: 20px; margin-top: 40px; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .box { width: 110px; height: 110px; border: 2px solid var(--fg-color); display: flex; align-items: center; justify-content: center; transition: 0.5s; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: inherit; text-decoration: none; overflow: hidden; white-space: nowrap; position: relative; }
+        .box:hover { transform: scale(1.05); background: var(--fg-color); color: var(--bg-color); }
+        .mail-box { width: 110px; }
+        .mail-box:hover { width: 300px; }
+        .mail-box .mail-address { position: absolute; opacity: 0; font-size: 0.65rem; transition: 0.4s; pointer-events: none; text-transform: lowercase; }
+        .mail-box:hover .mail-text { opacity: 0; }
+        .mail-box:hover .mail-address { opacity: 1; }
+        @media (max-width: 768px) {
+            .final-links { gap: 10px; }
+            .box { width: 90px; height: 90px; font-size: 0.6rem; }
+            .mail-box:hover { width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="signature-btn">B.T.</div>
+    <div id="custom-cursor"></div>
+    <nav id="navbar"></nav>
+
+    <div class="scene"><div class="cube-wrapper" id="cube-container"></div></div>
+    <div class="scroll-container" id="ghost-scroll"></div>
+
+    <script>
+        const projects = [
+            { title: "Mimesis", sub: ["Form", "Texture", "Process"], img: "https://picsum.photos/id/10/800/1200", color: [221, 194, 161] },
+            { title: "Kinetic", sub: ["Motion", "Mechanism", "Impact"], img: "https://picsum.photos/id/20/800/1200", color: [233, 187, 135] },
+            { title: "Aether", sub: ["Light", "Atmosphere", "Detail"], img: "https://picsum.photos/id/30/800/1200", color: [245, 180, 109] },
+            { title: "Lumen", sub: ["Spectrum", "Refraction", "Intensity"], img: "https://picsum.photos/id/40/800/1200", color: [244, 220, 0] }
+        ];
+
+        const cursor = document.getElementById('custom-cursor');
+        const signature = document.getElementById('signature-btn');
+        const cube = document.getElementById('cube-container');
+        const ghost = document.getElementById('ghost-scroll');
+        const navbar = document.getElementById('navbar');
+        const vh = window.innerHeight;
+
+        let mouseX = 0, mouseY = 0, excitedInterval = null;
+        let startX = 0, isDragging = false, currentXOffset = 0;
+
+        let flatFaces = [{ type: 'landing', color: [240, 240, 240] }];
+        projects.forEach((proj, pIdx) => {
+            flatFaces.push({ type: 'main', title: proj.title, projectIdx: pIdx, img: proj.img, color: proj.color });
+            proj.sub.forEach((sName, sIdx) => {
+                flatFaces.push({ type: 'sub', title: proj.title, subTitle: sName, projectIdx: pIdx, img: proj.img, subIdx: sIdx, color: proj.color });
+            });
+        });
+        flatFaces.push({ type: 'final-call', title: "CHECK ME OUT HERE!", color: [10, 10, 10] });
+
+        // Sidebar
+        projects.forEach((proj, i) => {
+            const group = document.createElement('div');
+            group.className = 'nav-group'; group.id = `group-${i}`;
+            const mainIdx = 1 + (i * 4);
+            const mLink = document.createElement('a');
+            mLink.className = 'main-link'; mLink.href = "#"; mLink.innerHTML = `0${i+1} — ${proj.title}`;
+            mLink.onclick = (e) => { e.preventDefault(); window.scrollTo({ top: (1 + i * 4) * vh, behavior: 'smooth' }); };
+            const sNav = document.createElement('div');
+            sNav.className = 'sub-nav';
+            proj.sub.forEach((s, si) => {
+                const sl = document.createElement('a');
+                sl.className = 'sub-link'; sl.id = `sublink-${i}-${si}`; sl.href = "#"; sl.innerHTML = s;
+                sl.onclick = (e) => { e.preventDefault(); window.scrollTo({ top: (2 + i * 4 + si) * vh, behavior: 'smooth' }); };
+                sNav.appendChild(sl);
+            });
+            group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
+        });
+
+        // Faces Rendering
+        flatFaces.forEach((data, i) => {
+            const snap = document.createElement('div'); snap.className = 'snap-point'; ghost.appendChild(snap);
+            const face = document.createElement('div'); face.className = 'cube-face';
+            
+            if (data.type === 'landing') {
+                face.innerHTML = `
+                <div class="horizontal-slider" id="main-slider">
+                    <div class="panel">
+                        <div class="centered-container">
+                            <em class="italic-script">ciao!</em>
+                            <h1 class="split-title monumental">HERE'S MY<br>INDUSTRIAL DESIGN<br>JOURNAL.</h1>
+                            <em class="italic-script">enjoy!</em>
+                        </div>
+                        <div class="hint-vertical"><span class="italic-script-small">some of what i've done</span><span class="arrow">↓</span></div>
+                        <div class="hint-horizontal"><span class="italic-script-small">who am i?</span><span class="arrow">→</span></div>
+                    </div>
+                    <div class="panel">
+                        <div class="presentation-content">
+                            <div class="presentation-rect"></div>
+                            <div class="presentation-text">
+                                <h2>Design with<br>Intention.</h2>
+                                <p>Industrial Designer focused on technical precision and emotive forms.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (data.type === 'main') {
+                face.innerHTML = `<div class="portfolio-content"><h3>Project Overview</h3><h2>${data.title}</h2><p>Industrial Design. Archive 2026.</p></div><div class="image-container"><img src="${data.img}"></div>`;
+            } else if (data.type === 'sub') {
+                face.innerHTML = `<div class="portfolio-content"><h3>${data.title} / Study</h3><h2>${data.subTitle}</h2></div><div class="image-container"><img src="${data.img}"></div>`;
+            } else if (data.type === 'final-call') {
+                face.innerHTML = `
+                <div class="centered-container">
+                    <em class="italic-script">did something intrigue you?</em>
+                    <h1 class="split-title monumental">${data.title}</h1>
+                    <div class="final-links">
+                        <a href="https://www.instagram.com/bertone_des/" target="_blank" class="box">Instagram</a>
+                        <a href="https://www.linkedin.com/in/tommaso-bertone-465542286" target="_blank" class="box">LinkedIn</a>
+                        <div class="box mail-box"><span class="mail-text">Mail</span><span class="mail-address">bertonetommaso2@gmail.com</span></div>
+                    </div>
+                </div>`;
+            }
+            cube.appendChild(face);
+        });
+
+        // Split text
+        document.querySelectorAll('.split-title').forEach(t => {
+            const lines = t.innerHTML.split('<br>'); t.innerHTML = '';
+            lines.forEach(l => {
+                const d = document.createElement('div');
+                l.split('').forEach(c => {
+                    const s = document.createElement('span'); s.className = 'char';
+                    s.innerHTML = c === ' ' ? '&nbsp;' : c; d.appendChild(s);
+                });
+                t.appendChild(d);
+            });
+        });
+
+        // --- UNIVERSAL SLIDER LOGIC (Mouse + Touch) ---
+        const slider = document.getElementById('main-slider');
+        
+        // Mouse Events
+        document.addEventListener('mousedown', (e) => { if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+            if (isDragging) { const deltaX = e.clientX - startX; slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px)`; }
+        });
+        document.addEventListener('mouseup', (e) => {
+            if (!isDragging) return; isDragging = false;
+            finishSlide(e.clientX);
+        });
+
+        // Touch Events
+        document.addEventListener('touchstart', (e) => { 
+            if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.touches[0].clientX; slider.style.transition = 'none'; } 
+        }, { passive: false });
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) { 
+                const deltaX = e.touches[0].clientX - startX; 
+                slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px)`; 
+                e.preventDefault(); // Stop scroll while sliding
+            }
+        }, { passive: false });
+        document.addEventListener('touchend', (e) => {
+            if (!isDragging) return; isDragging = false;
+            finishSlide(e.changedTouches[0].clientX);
+        });
+
+        function finishSlide(endX) {
+            slider.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            const deltaX = endX - startX;
+            if (Math.abs(deltaX) > 100) currentXOffset = (deltaX < 0) ? -window.innerWidth : 0;
+            slider.style.transform = `translateX(${currentXOffset}px)`;
+        }
+
+        signature.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); currentXOffset = -window.innerWidth; slider.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transform = `translateX(${currentXOffset}px)`; };
+
+        // Interactions
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect')) cursor.classList.add('active');
+        });
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect')) cursor.classList.remove('active');
+        });
+
+        document.addEventListener('mousedown', (e) => spawnDroplets(e.clientX, e.clientY));
+        
+        function spawnDroplets(x, y) {
+            const hit = document.elementFromPoint(x, y)?.closest('a, #signature-btn, h1, h2, h3, .char, .box, .presentation-rect');
+            if (hit) {
+                for (let i = 0; i < 4; i++) {
+                    const d = document.createElement('div'); d.className = 'droplet'; document.body.appendChild(d);
+                    d.style.left = x + 'px'; d.style.top = y + 'px';
+                    const angle = Math.random() * Math.PI * 2;
+                    d.animate([{ opacity: 1 }, { transform: `translate(${Math.cos(angle)*30}px, ${Math.sin(angle)*30}px) scale(0)`, opacity: 0 }], { duration: 600 }).onfinish = () => d.remove();
+                }
+            }
+            if (document.elementFromPoint(x, y)?.closest('.mail-box')) {
+                navigator.clipboard.writeText('bertonetommaso2@gmail.com').then(() => {
+                    const addr = document.querySelector('.mail-address');
+                    addr.innerText = 'copied to clipboard!';
+                    setTimeout(() => { addr.innerText = 'bertonetommaso2@gmail.com'; }, 2000);
+                });
+            }
+        }
+
+        // Engine
+        function lerp(c1, c2, f) { return c1.map((v, i) => Math.round(v + (c2[i] - v) * f)); }
+        function update() {
+            const sY = window.scrollY; const progress = sY / vh; const idx = Math.floor(progress); const f = progress - idx;
+            let rgb = (idx < flatFaces.length - 1) ? lerp(flatFaces[idx].color, flatFaces[idx + 1].color, f) : flatFaces[flatFaces.length - 1].color;
+            const bright = (rgb[0]*299 + rgb[1]*587 + rgb[2]*114)/1000;
+            document.documentElement.style.setProperty('--bg-color', `rgb(${rgb.join(',')})`);
+            document.documentElement.style.setProperty('--fg-color', bright > 130 ? 'rgb(40,40,40)' : 'rgb(245,245,245)');
+            signature.style.filter = `invert(${bright > 130 ? 0 : 1})`;
+
+            if (sY > vh * 0.4 && sY < (flatFaces.length - 1.5) * vh) navbar.classList.add('visible');
+            else navbar.classList.remove('visible');
+
+            const fcs = document.querySelectorAll('.cube-face');
+            fcs.forEach((face, i) => {
+                const dist = sY - (i * vh); const off = dist / vh;
+                if (Math.abs(off) < 1.1) {
+                    face.style.transform = `translateY(${-dist}px) translateZ(${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
+                    face.style.opacity = Math.max(0, 1 - Math.pow(Math.abs(off), 2.2));
+                    if (Math.abs(off) < 0.5) {
+                        face.classList.add('active-content'); const d = flatFaces[i];
+                        if (d.type === 'final-call') {
+                            cursor.classList.add('active');
+                            if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
+                        } else { if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } }
+
+                        if (d && d.projectIdx !== undefined) {
+                            document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('active'));
+                            document.querySelectorAll('.sub-link').forEach(l => l.classList.remove('active'));
+                            const grp = document.getElementById(`group-${d.projectIdx}`);
+                            if (grp) { grp.classList.add('active'); if (d.type === 'sub') { const sl = document.getElementById(`sublink-${d.projectIdx}-${d.subIdx}`); if (sl) sl.classList.add('active'); } }
+                        }
+                    } else { face.classList.remove('active-content'); }
+                } else { face.style.opacity = 0; face.classList.remove('active-content'); }
+            });
+            requestAnimationFrame(update);
+        }
+        update(); window.addEventListener('resize', () => location.reload());
+    </script>
+</body>
+</html>
