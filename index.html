@@ -12,7 +12,14 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; -webkit-tap-highlight-color: transparent; }
-        html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+        
+        html { 
+            scroll-snap-type: y mandatory; 
+            scroll-behavior: smooth; 
+            /* Importante per permettere lo scroll verticale nativo */
+            touch-action: pan-y; 
+        }
+        
         body { 
             background-color: var(--bg-color); 
             color: var(--fg-color); 
@@ -21,7 +28,6 @@
             transition: background-color 0.4s ease; 
             user-select: none; 
             width: 100vw;
-            overscroll-behavior-y: none; /* Previene rimbalzi su mobile */
         }
 
         /* --- SIGNATURE (B.T.) --- */
@@ -33,7 +39,7 @@
         }
         #signature-btn:hover { transform: translateX(-50%) scale(1.1); }
 
-        /* --- CURSORE (Nascosto su touch per pulizia, visibile su PC) --- */
+        /* --- CURSORE --- */
         #custom-cursor {
             position: fixed; width: 18px; height: 18px; background-color: white; border-radius: 50%;
             pointer-events: none; z-index: 10006; mix-blend-mode: difference;
@@ -41,7 +47,7 @@
             left: -100px; top: -100px;
         }
         #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
-        @media (hover: none) { #custom-cursor { display: none; } } /* Nascondi su mobile */
+        @media (hover: none) { #custom-cursor { display: none; } } 
 
         @keyframes wave {
             0%, 100% { border-radius: 50%; transform: translate(-50%, -50%) scale(1); }
@@ -53,13 +59,10 @@
             pointer-events: none; z-index: 10004; mix-blend-mode: difference; transform: translate(-50%, -50%);
         }
 
-        /* --- SIDEBAR / NAVBAR --- */
-        nav { 
-            position: fixed; z-index: 10000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none;
-        }
+        /* --- SIDEBAR --- */
+        nav { position: fixed; z-index: 10000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
         nav.visible { opacity: 1; pointer-events: all; }
 
-        /* PC Layout */
         @media (min-width: 769px) {
             nav { left: 20%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
             .nav-group { display: flex; flex-direction: column; gap: 8px; }
@@ -67,7 +70,6 @@
             .nav-group.active .sub-nav { max-height: 150px; margin-top: 5px; }
         }
 
-        /* Mobile Layout (Bottom Bar) */
         @media (max-width: 768px) {
             nav { 
                 bottom: 20px; left: 0; width: 100%; 
@@ -78,7 +80,7 @@
                 background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
             }
             .nav-group { display: flex; flex-direction: column; flex-shrink: 0; scroll-snap-align: start; }
-            .sub-nav { display: none; } /* Nascondi sottosezioni su mobile per spazio */
+            .sub-nav { display: none; }
             .main-link { font-size: 0.7rem !important; opacity: 0.5 !important; }
             .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.1); }
         }
@@ -93,10 +95,7 @@
         .nav-group.active .main-link { opacity: 1 !important; transform: translateX(5px); }
         .nav-group.active .main-link::before { width: 25px; }
 
-        .sub-link { 
-            color: var(--fg-color); text-decoration: none; font-size: 0.6rem; 
-            text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; 
-        }
+        .sub-link { color: var(--fg-color); text-decoration: none; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; }
         .sub-link:hover { opacity: 0.8 !important; transform: translateX(3px); }
         .sub-link.active { opacity: 1 !important; font-weight: 700; }
 
@@ -104,10 +103,7 @@
         .char { display: inline-block; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .char:hover { transform: translateY(-4px) rotate(2deg); color: inherit; }
 
-        h1.monumental { 
-            font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; 
-        }
-        /* Responsive Font Sizes */
+        h1.monumental { font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; }
         @media (min-width: 769px) { h1.monumental { font-size: 7.5rem; letter-spacing: -5px; } }
         @media (max-width: 768px) { h1.monumental { font-size: 13vw; letter-spacing: -2px; } }
 
@@ -115,27 +111,21 @@
         @media (min-width: 769px) { em.italic-script { font-size: 2rem; } }
         @media (max-width: 768px) { em.italic-script { font-size: 1.2rem; } }
 
-        .italic-script-small { font-family: 'Georgia', serif; font-style: italic; font-size: 1rem; }
+        .italic-script-small { font-family: 'Georgia', serif; font-style: italic; font-size: 1.1rem; }
 
-        /* --- LAYOUT CONTAINERS --- */
+        /* --- SLIDER & PRESENTATION --- */
+        .horizontal-slider { display: flex; width: 200vw; height: 100vh; transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1); will-change: transform; }
+        .panel { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; }
         .centered-container { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100vw; height: 100vh; padding: 20px; }
 
-        /* --- LANDING & PRESENTATION --- */
-        .horizontal-slider { display: flex; width: 200vw; height: 100vh; transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1); }
-        .panel { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; }
-
-        .presentation-content { 
-            display: flex; align-items: center; justify-content: center; 
-            width: 100vw; height: 100%; padding: 0 10%; 
-        }
+        .presentation-content { display: flex; align-items: center; justify-content: center; width: 100vw; height: 100%; padding: 0 10%; }
         .presentation-rect { border: 2px solid var(--fg-color); flex-shrink: 0; position: relative; }
         .presentation-text { text-align: left; }
 
-        /* Responsive Presentation */
         @media (min-width: 769px) {
             .presentation-content { gap: 100px; }
             .presentation-rect { width: 380px; height: 520px; }
-            .presentation-text h2 { font-size: 4rem; }
+            .presentation-text h2 { font-size: 4rem; margin-bottom: 25px; }
         }
         @media (max-width: 768px) {
             .presentation-content { flex-direction: column-reverse; gap: 30px; justify-content: center; text-align: center; }
@@ -145,12 +135,12 @@
             .presentation-text p { font-size: 0.9rem; }
         }
 
-        /* --- LANDING HINTS --- */
+        /* --- HINTS --- */
         .hint-vertical { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
         .hint-horizontal { position: absolute; right: 5vw; top: 60%; display: flex; align-items: center; gap: 15px; pointer-events: none; }
         @media (max-width: 768px) {
             .hint-horizontal { top: 75%; flex-direction: column; gap: 5px; }
-            .hint-horizontal span:first-child { display: none; } /* Nascondi testo su mobile se ingombra */
+            .hint-horizontal span:first-child { display: none; }
         }
         .arrow { font-size: 1.2rem; }
 
@@ -159,24 +149,15 @@
         .image-container { position: absolute; background: #ddd; box-shadow: 0 40px 80px rgba(0,0,0,0.1); z-index: 1; }
         .image-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* PC Portfolio Layout */
         @media (min-width: 769px) {
             .portfolio-content { left: 33vw; top: 50%; transform: translateY(-50%); max-width: 450px; text-align: left; }
             .image-container { right: 5vw; top: 50%; transform: translateY(-50%); width: 420px; height: 580px; }
             .portfolio-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
             .portfolio-content h2 { font-size: 5rem; margin-bottom: 1.5rem; }
         }
-
-        /* Mobile Portfolio Layout (Stacked) */
         @media (max-width: 768px) {
-            .portfolio-content { 
-                top: 15%; left: 50%; transform: translateX(-50%); 
-                width: 85%; text-align: center; 
-            }
-            .image-container { 
-                top: 55%; left: 50%; transform: translate(-50%, -50%); 
-                width: 80vw; height: 45vh; 
-            }
+            .portfolio-content { top: 15%; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; }
+            .image-container { top: 60%; left: 50%; transform: translate(-50%, -50%); width: 85vw; height: 50vh; }
             .portfolio-content h3 { font-size: 1rem; margin-bottom: 0.5rem; opacity: 0.6; }
             .portfolio-content h2 { font-size: 3rem; margin-bottom: 1rem; line-height: 1; }
             .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
@@ -185,6 +166,7 @@
         /* --- ENGINE 3D --- */
         .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
         .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
+        /* Scroll container deve avere altezza per permettere scroll */
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
         .snap-point { height: 100vh; scroll-snap-align: start; pointer-events: none; }
         .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
@@ -195,14 +177,14 @@
         .box { width: 110px; height: 110px; border: 2px solid var(--fg-color); display: flex; align-items: center; justify-content: center; transition: 0.5s; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: inherit; text-decoration: none; overflow: hidden; white-space: nowrap; position: relative; }
         .box:hover { transform: scale(1.05); background: var(--fg-color); color: var(--bg-color); }
         .mail-box { width: 110px; }
-        .mail-box:hover { width: 300px; }
+        .mail-box:hover { width: 360px; }
         .mail-box .mail-address { position: absolute; opacity: 0; font-size: 0.65rem; transition: 0.4s; pointer-events: none; text-transform: lowercase; }
         .mail-box:hover .mail-text { opacity: 0; }
         .mail-box:hover .mail-address { opacity: 1; }
         @media (max-width: 768px) {
             .final-links { gap: 10px; }
             .box { width: 90px; height: 90px; font-size: 0.6rem; }
-            .mail-box:hover { width: 200px; }
+            .mail-box:hover { width: 220px; }
         }
     </style>
 </head>
@@ -231,7 +213,7 @@
         const vh = window.innerHeight;
 
         let mouseX = 0, mouseY = 0, excitedInterval = null;
-        let startX = 0, isDragging = false, currentXOffset = 0;
+        let startX = 0, startY = 0, isDragging = false, currentXOffset = 0;
 
         let flatFaces = [{ type: 'landing', color: [240, 240, 240] }];
         projects.forEach((proj, pIdx) => {
@@ -261,7 +243,7 @@
             group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
         });
 
-        // Faces Rendering
+        // Faces
         flatFaces.forEach((data, i) => {
             const snap = document.createElement('div'); snap.className = 'snap-point'; ghost.appendChild(snap);
             const face = document.createElement('div'); face.className = 'cube-face';
@@ -307,7 +289,6 @@
             cube.appendChild(face);
         });
 
-        // Split text
         document.querySelectorAll('.split-title').forEach(t => {
             const lines = t.innerHTML.split('<br>'); t.innerHTML = '';
             lines.forEach(l => {
@@ -320,10 +301,10 @@
             });
         });
 
-        // --- UNIVERSAL SLIDER LOGIC (Mouse + Touch) ---
+        // --- SMART TOUCH LOGIC (Crucial for Scrolling) ---
         const slider = document.getElementById('main-slider');
         
-        // Mouse Events
+        // Desktop Mouse Drag
         document.addEventListener('mousedown', (e) => { if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
@@ -331,24 +312,41 @@
             if (isDragging) { const deltaX = e.clientX - startX; slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px)`; }
         });
         document.addEventListener('mouseup', (e) => {
-            if (!isDragging) return; isDragging = false;
-            finishSlide(e.clientX);
+            if (!isDragging) return; isDragging = false; finishSlide(e.clientX);
         });
 
-        // Touch Events
-        document.addEventListener('touchstart', (e) => { 
-            if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.touches[0].clientX; slider.style.transition = 'none'; } 
-        }, { passive: false });
-        document.addEventListener('touchmove', (e) => {
-            if (isDragging) { 
-                const deltaX = e.touches[0].clientX - startX; 
-                slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px)`; 
-                e.preventDefault(); // Stop scroll while sliding
+        // Mobile Touch (Fixes Scroll Issue)
+        document.addEventListener('touchstart', (e) => {
+            if (window.scrollY < vh * 0.5) { 
+                isDragging = false; // Reset drag state
+                startX = e.touches[0].clientX; 
+                startY = e.touches[0].clientY;
+                slider.style.transition = 'none'; 
             }
         }, { passive: false });
+
+        document.addEventListener('touchmove', (e) => {
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            const diffX = touchX - startX;
+            const diffY = touchY - startY;
+
+            // Logica Intelligente:
+            // Se il movimento è più orizzontale che verticale, e siamo sulla landing...
+            if (window.scrollY < vh * 0.5 && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                isDragging = true;
+                e.preventDefault(); // Blocca lo scroll nativo solo in questo caso
+                const move = Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX));
+                slider.style.transform = `translateX(${move}px)`;
+            }
+            // Altrimenti lascia che il browser faccia lo scroll nativo (nessun e.preventDefault)
+        }, { passive: false });
+
         document.addEventListener('touchend', (e) => {
-            if (!isDragging) return; isDragging = false;
-            finishSlide(e.changedTouches[0].clientX);
+            if (isDragging) {
+                isDragging = false;
+                finishSlide(e.changedTouches[0].clientX);
+            }
         });
 
         function finishSlide(endX) {
