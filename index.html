@@ -20,21 +20,31 @@
             touch-action: pan-y; 
             overscroll-behavior: none; 
             height: 100%;
+            width: 100%;
+            overflow-x: hidden; /* Spostato qui per sicurezza */
         }
         
         body { 
             background-color: var(--bg-color); 
             color: var(--fg-color); 
             font-family: 'Inter', sans-serif; 
-            overflow-x: hidden; 
             transition: background-color 0.4s ease; 
             user-select: none; 
             width: 100%; 
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* Fix Mobile Scroll Locking */
         @media (max-width: 768px) {
-            body { position: fixed; overflow: hidden; width: 100%; height: 100%; }
+            body { 
+                position: fixed; 
+                overflow: hidden; 
+                width: 100%; 
+                height: 100%; 
+                top: 0; left: 0;
+            }
         }
 
         /* --- MOBILE ARROWS --- */
@@ -42,6 +52,8 @@
             position: fixed; left: 20px; z-index: 10020; font-size: 2.5rem;
             color: var(--fg-color); opacity: 0.5; cursor: pointer; display: none;
             transition: opacity 0.3s, transform 0.2s; pointer-events: all; padding: 10px;
+            /* Fix per Firefox Mobile tap highlight */
+            outline: none; -webkit-tap-highlight-color: transparent;
         }
         .mobile-nav-arrow:active { transform: scale(1.2); opacity: 1; }
         #mob-up { top: 20px; }
@@ -62,7 +74,7 @@
             position: fixed; width: 18px; height: 18px; background-color: white; border-radius: 50%;
             pointer-events: none; z-index: 10006; mix-blend-mode: difference;
             transition: width 0.3s ease, height 0.3s ease, transform 0.1s linear; 
-            transform: translate3d(-50%, -50%, 0); left: 0; top: 0;
+            transform: translate3d(-50%, -50%, 0); left: 0; top: 0; will-change: transform;
         }
         #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
         @media (pointer: coarse), (hover: none) { #custom-cursor { display: none !important; } }
@@ -81,7 +93,6 @@
         nav { position: fixed; z-index: 10000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
         nav.visible { opacity: 1; pointer-events: all; }
 
-        /* PC Style */
         @media (min-width: 769px) {
             nav { left: 20%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
             .nav-group { display: flex; flex-direction: column; gap: 8px; }
@@ -89,7 +100,6 @@
             .nav-group.active .sub-nav { max-height: 150px; margin-top: 5px; }
         }
 
-        /* Mobile Style */
         @media (max-width: 768px) {
             nav { 
                 bottom: 0; left: 0; width: 100%; display: flex; flex-direction: row; gap: 20px; 
@@ -191,27 +201,41 @@
         }
         @media (max-width: 768px) {
             .portfolio-content { top: 15%; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; }
-            
-            /* --- FIXED: MOBILE IMAGE SIZE (40% SMALLER) --- */
+            /* MOBILE IMAGE: 40% Smaller than standard */
             .image-container { 
                 top: 55%; 
                 left: 50%; transform: translate(-50%, -50%); 
-                width: 55vw; /* Drastically Reduced from 85vw */
-                height: 22vh; /* Drastically Reduced from 35-50vh */
+                width: 55vw; 
+                height: 22vh; 
                 box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             }
-            
             .portfolio-content h3 { font-size: 0.7rem; margin-bottom: 0.5rem; opacity: 0.6; font-weight: 500; }
             .portfolio-content h2 { font-size: 3rem; margin-bottom: 1rem; line-height: 1; }
             .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
         }
 
-        /* --- ENGINE 3D --- */
-        .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
+        /* --- ENGINE 3D (Firefox Optimized) --- */
+        .scene { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
+            perspective: 1500px; z-index: 5; pointer-events: none; 
+            /* Firefox Fix: Stabilizza il rendering 3D */
+            transform-style: preserve-3d;
+        }
         .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
+        
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
         .snap-point { height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
-        .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
+        
+        .cube-face { 
+            width: 100%; height: 100vh; 
+            display: flex; position: absolute; top: 0; left: 0; 
+            /* Firefox Fix: backface-visibility */
+            backface-visibility: hidden; -webkit-backface-visibility: hidden;
+            /* Initial state */
+            opacity: 0; visibility: hidden; 
+            will-change: transform, opacity, visibility; 
+            pointer-events: none; 
+        }
         .cube-face.active-content { pointer-events: all; }
 
         /* --- FINAL BOXES --- */
@@ -274,7 +298,6 @@
         let startX = 0, startY = 0, isDragging = false, currentXOffset = 0;
         let currentActiveGroup = null;
         
-        // Mobile Physics
         let targetScrollY = 0;
         let currentScrollY = 0;
         const isMobile = () => window.innerWidth <= 768;
@@ -288,7 +311,7 @@
         });
         flatFaces.push({ type: 'final-call', title: "CHECK ME OUT HERE!", color: [10, 10, 10] });
 
-        // Sidebar Generation
+        // Sidebar
         projects.forEach((proj, i) => {
             const group = document.createElement('div');
             group.className = 'nav-group'; group.id = `group-${i}`;
@@ -308,7 +331,6 @@
             group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
         });
 
-        // 5th Section: CONTACTS (Manual Add)
         const contactGroup = document.createElement('div');
         contactGroup.className = 'nav-group';
         contactGroup.id = 'group-contacts';
@@ -319,7 +341,6 @@
         contactGroup.appendChild(cLink);
         navbar.appendChild(contactGroup);
 
-        // Generate Faces
         flatFaces.forEach((data, i) => {
             const snap = document.createElement('div'); snap.className = 'snap-point'; ghost.appendChild(snap);
             const face = document.createElement('div'); face.className = 'cube-face';
@@ -375,7 +396,6 @@
             });
         });
 
-        // --- NAVIGATION ENGINE ---
         function navigateTo(index) {
             const target = index * window.innerHeight;
             if (isMobile()) {
@@ -394,7 +414,6 @@
             if (currentIdx < flatFaces.length - 1) navigateTo(currentIdx + 1);
         };
 
-        // --- SLIDER & TOUCH ---
         const slider = document.getElementById('main-slider');
         
         document.addEventListener('touchmove', (e) => { if (!isDragging) e.preventDefault(); }, { passive: false });
@@ -416,7 +435,6 @@
             if (isDragging) { isDragging = false; finishSlide(e.changedTouches[0].clientX); }
         });
 
-        // Mouse (PC)
         document.addEventListener('mousedown', (e) => { if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
@@ -435,7 +453,6 @@
 
         signature.onclick = () => { navigateTo(0); currentXOffset = -window.innerWidth; slider.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transform = `translate3d(${currentXOffset}px, 0, 0)`; };
 
-        // --- INTERACTIONS ---
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect, .mobile-nav-arrow, .monumental')) cursor.classList.add('active');
         });
@@ -462,10 +479,7 @@
                     const addr = mailBox.querySelector('.mail-address');
                     addr.innerText = 'copied to clipboard!';
                     mailBox.classList.add('copied');
-                    setTimeout(() => { 
-                        addr.innerText = 'bertonetommaso2@gmail.com'; 
-                        mailBox.classList.remove('copied');
-                    }, 2000);
+                    setTimeout(() => { addr.innerText = 'bertonetommaso2@gmail.com'; mailBox.classList.remove('copied'); }, 2000);
                 });
             }
         }
@@ -485,7 +499,6 @@
             const idx = Math.floor(progress);
             const f = progress - idx;
             
-            // Arrow Visibility
             if (isMobile()) {
                 if (idx === 0) { mobUp.style.display = 'none'; mobDown.style.display = 'none'; } 
                 else { mobUp.style.display = 'block'; mobDown.style.display = 'block'; }
@@ -499,25 +512,21 @@
             mobUp.style.color = document.body.style.color;
             mobDown.style.color = document.body.style.color;
 
-            // --- FIXED: AUTO-HIDE PC NAV ON LAST PAGE ---
-            const isAtEnd = sY > (flatFaces.length - 1.2) * vh; // Detect last page
+            // FIX: Hide Navbar on PC Last Page
+            const isAtEnd = sY > (flatFaces.length - 1.2) * vh;
             const isPCLanding = sY > vh * 0.4;
             
-            // Show only if NOT at end (for PC) or Always on Mobile if scrolled
-            if (isPCLanding && (!isAtEnd || isMobile())) {
-                navbar.classList.add('visible');
-            } else {
-                navbar.classList.remove('visible');
-            }
+            if (isPCLanding && (!isAtEnd || isMobile())) navbar.classList.add('visible');
+            else navbar.classList.remove('visible');
 
             const fcs = document.querySelectorAll('.cube-face');
             fcs.forEach((face, i) => {
                 const dist = sY - (i * vh);
                 if (Math.abs(dist) < vh * 1.1) {
                     const off = dist / vh;
-                    face.style.display = 'flex';
-                    face.style.transform = `translate3d(0, ${-dist}px, ${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
+                    face.style.visibility = 'visible';
                     face.style.opacity = Math.max(0, 1 - Math.pow(Math.abs(off), 2.2));
+                    face.style.transform = `translate3d(0, ${-dist}px, ${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
                     
                     if (Math.abs(off) < 0.5) {
                         face.classList.add('active-content'); const d = flatFaces[i];
@@ -527,9 +536,7 @@
                             if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
                         } else { if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } }
 
-                        // NAVBAR & CONTACTS LOGIC
                         document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('active'));
-                        
                         let activeId = null;
                         if (d.type === 'final-call') activeId = 'group-contacts';
                         else if (d.projectIdx !== undefined) activeId = `group-${d.projectIdx}`;
@@ -543,19 +550,15 @@
                                     const sl = document.getElementById(`sublink-${d.projectIdx}-${d.subIdx}`);
                                     if (sl) sl.classList.add('active');
                                 }
-                                
                                 if (isMobile()) {
                                     const nav = document.getElementById('navbar');
-                                    const navWidth = nav.offsetWidth;
-                                    const elLeft = grp.offsetLeft;
-                                    const elWidth = grp.offsetWidth;
-                                    const scrollPos = elLeft - (navWidth / 2) + (elWidth / 2);
+                                    const scrollPos = grp.offsetLeft - (nav.offsetWidth / 2) + (grp.offsetWidth / 2);
                                     nav.scrollTo({ left: scrollPos, behavior: 'smooth' });
                                 }
                             }
                         }
                     } else { face.classList.remove('active-content'); }
-                } else { face.style.display = 'none'; face.style.opacity = 0; }
+                } else { face.style.visibility = 'hidden'; face.style.opacity = 0; }
             });
             requestAnimationFrame(update);
         }
