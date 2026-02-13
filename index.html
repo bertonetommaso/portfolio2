@@ -38,15 +38,22 @@
         }
         #signature-btn:hover { transform: translateX(-50%) scale(1.1); }
 
-        /* --- CURSORE --- */
+        /* --- CURSORE PC --- */
         #custom-cursor {
             position: fixed; width: 18px; height: 18px; background-color: white; border-radius: 50%;
             pointer-events: none; z-index: 10006; mix-blend-mode: difference;
             transition: width 0.3s ease, height 0.3s ease, transform 0.15s ease-out; transform: translate(-50%, -50%);
             left: -100px; top: -100px;
         }
-        #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
-        @media (hover: none) { #custom-cursor { display: none; } } 
+        #custom-cursor.active { 
+            width: 22px; height: 22px; 
+            animation: wave 0.6s infinite ease-in-out; 
+        }
+        
+        /* FIX: Nasconde totalmente il cursore su dispositivi touch */
+        @media (pointer: coarse), (hover: none) { 
+            #custom-cursor { display: none !important; opacity: 0 !important; visibility: hidden; } 
+        }
 
         @keyframes wave {
             0%, 100% { border-radius: 50%; transform: translate(-50%, -50%) scale(1); }
@@ -107,9 +114,26 @@
         .char { display: inline-block; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .char:hover { transform: translateY(-4px) rotate(2deg); color: inherit; }
 
-        h1.monumental { font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; }
+        /* Stile base del titolo */
+        h1.monumental { 
+            font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; 
+        }
+        
+        /* Regola per evitare lo split delle parole */
+        h1.monumental div { white-space: nowrap; }
+
         @media (min-width: 769px) { h1.monumental { font-size: 7.5rem; letter-spacing: -5px; } }
-        @media (max-width: 768px) { h1.monumental { font-size: 13vw; letter-spacing: -2px; } }
+        
+        /* FIX MOBILE: Font ridotto a 10vw e line-height ottimizzato per evitare tagli */
+        @media (max-width: 768px) { 
+            h1.monumental { 
+                font-size: 10vw; 
+                letter-spacing: -1px; 
+                margin: 10px 0; 
+                width: 95vw; /* Assicura che stia nel viewport */
+                margin-left: auto; margin-right: auto;
+            } 
+        }
 
         em.italic-script { font-family: 'Georgia', serif; font-style: italic; display: block; }
         @media (min-width: 769px) { em.italic-script { font-size: 2rem; } }
@@ -139,27 +163,16 @@
             .presentation-text p { font-size: 0.9rem; }
         }
 
-        /* --- HINTS (Fixed for Mobile Visibility) --- */
+        /* --- HINTS --- */
         .hint-vertical { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
         
         .hint-horizontal { 
             position: absolute; right: 5vw; top: 60%; 
             display: flex; align-items: center; gap: 15px; pointer-events: none; 
         }
-        
         @media (max-width: 768px) {
-            .hint-horizontal { 
-                top: 70%; /* Regolato per non sovrapporsi */
-                flex-direction: row; 
-                gap: 8px; 
-                right: 5vw;
-            }
-            /* Forza la visualizzazione del testo su mobile */
-            .hint-horizontal span:first-child { 
-                display: block; 
-                font-size: 0.8rem;
-                opacity: 0.8;
-            } 
+            .hint-horizontal { top: 70%; flex-direction: row; gap: 8px; right: 5vw; }
+            .hint-horizontal span:first-child { display: block; font-size: 0.8rem; opacity: 0.8; } 
         }
         .arrow { font-size: 1.2rem; }
 
@@ -182,18 +195,11 @@
             .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
         }
 
-        /* --- ENGINE 3D & SCROLL PHYSICS --- */
+        /* --- ENGINE 3D --- */
         .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
         .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
-        
-        .snap-point { 
-            height: 100vh; 
-            scroll-snap-align: start; 
-            scroll-snap-stop: always; 
-            pointer-events: none; 
-        }
-        
+        .snap-point { height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
         .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
         .cube-face.active-content { pointer-events: all; }
 
@@ -239,7 +245,7 @@
 
         let mouseX = 0, mouseY = 0, excitedInterval = null;
         let startX = 0, startY = 0, isDragging = false, currentXOffset = 0;
-        let currentActiveGroup = null; // Track active group for mobile scroll
+        let currentActiveGroup = null;
 
         let flatFaces = [{ type: 'landing', color: [240, 240, 240] }];
         projects.forEach((proj, pIdx) => {
@@ -250,7 +256,7 @@
         });
         flatFaces.push({ type: 'final-call', title: "CHECK ME OUT HERE!", color: [10, 10, 10] });
 
-        // Sidebar Generation
+        // Sidebar
         projects.forEach((proj, i) => {
             const group = document.createElement('div');
             group.className = 'nav-group'; group.id = `group-${i}`;
@@ -259,7 +265,6 @@
             mLink.className = 'main-link'; mLink.href = "#"; mLink.innerHTML = `0${i+1} — ${proj.title}`;
             mLink.onclick = (e) => { e.preventDefault(); window.scrollTo({ top: (1 + i * 4) * vh, behavior: 'smooth' }); };
             
-            // Subnav only visible on PC via CSS
             const sNav = document.createElement('div');
             sNav.className = 'sub-nav';
             proj.sub.forEach((s, si) => {
@@ -271,18 +276,19 @@
             group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
         });
 
-        // Faces Rendering
+        // Faces Generation
         flatFaces.forEach((data, i) => {
             const snap = document.createElement('div'); snap.className = 'snap-point'; ghost.appendChild(snap);
             const face = document.createElement('div'); face.className = 'cube-face';
             
             if (data.type === 'landing') {
+                // FIXED TITLE SPLIT: Each word in its own row, safe for mobile
                 face.innerHTML = `
                 <div class="horizontal-slider" id="main-slider">
                     <div class="panel">
                         <div class="centered-container">
                             <em class="italic-script">ciao!</em>
-                            <h1 class="split-title monumental">HERE'S MY<br>INDUSTRIAL DESIGN<br>JOURNAL.</h1>
+                            <h1 class="split-title monumental">HERE'S MY<br>INDUSTRIAL<br>DESIGN<br>JOURNAL.</h1>
                             <em class="italic-script">enjoy!</em>
                         </div>
                         <div class="hint-vertical"><span class="italic-script-small">some of what i've done</span><span class="arrow">↓</span></div>
@@ -311,6 +317,7 @@
             cube.appendChild(face);
         });
 
+        // Split text for animation
         document.querySelectorAll('.split-title').forEach(t => {
             const lines = t.innerHTML.split('<br>'); t.innerHTML = '';
             lines.forEach(l => {
@@ -323,9 +330,10 @@
             });
         });
 
-        // Touch & Slide Logic
+        // Logic
         const slider = document.getElementById('main-slider');
         
+        // Mouse Events
         document.addEventListener('mousedown', (e) => { if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
@@ -336,6 +344,7 @@
             if (!isDragging) return; isDragging = false; finishSlide(e.clientX);
         });
 
+        // Touch Events with Trail
         document.addEventListener('touchstart', (e) => {
             if (window.scrollY < vh * 0.5) { 
                 isDragging = false; startX = e.touches[0].clientX; startY = e.touches[0].clientY; slider.style.transition = 'none'; 
@@ -343,9 +352,15 @@
         }, { passive: false });
 
         document.addEventListener('touchmove', (e) => {
-            const diffX = e.touches[0].clientX - startX;
-            const diffY = e.touches[0].clientY - startY;
-            // Solo slide orizzontale se siamo in alto e il gesto è chiaramente orizzontale
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            
+            // GENERATE TRAIL EFFECT ON MOBILE TOUCH
+            spawnDroplets(touchX, touchY);
+
+            const diffX = touchX - startX;
+            const diffY = touchY - startY;
+
             if (window.scrollY < vh * 0.5 && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
                 isDragging = true; e.preventDefault();
                 slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px)`;
@@ -375,15 +390,17 @@
         document.addEventListener('mousedown', (e) => spawnDroplets(e.clientX, e.clientY));
         
         function spawnDroplets(x, y) {
-            const hit = document.elementFromPoint(x, y)?.closest('a, #signature-btn, h1, h2, h3, .char, .box, .presentation-rect');
-            if (hit) {
-                for (let i = 0; i < 4; i++) {
-                    const d = document.createElement('div'); d.className = 'droplet'; document.body.appendChild(d);
-                    d.style.left = x + 'px'; d.style.top = y + 'px';
-                    const angle = Math.random() * Math.PI * 2;
-                    d.animate([{ opacity: 1 }, { transform: `translate(${Math.cos(angle)*30}px, ${Math.sin(angle)*30}px) scale(0)`, opacity: 0 }], { duration: 600 }).onfinish = () => d.remove();
-                }
+            const isMobile = window.innerWidth <= 768;
+            const count = isMobile ? 2 : 4; // More particles for trail effect on mobile
+            
+            for (let i = 0; i < count; i++) {
+                const d = document.createElement('div'); d.className = 'droplet'; document.body.appendChild(d);
+                d.style.left = x + 'px'; d.style.top = y + 'px';
+                const angle = Math.random() * Math.PI * 2;
+                const dist = isMobile ? 15 : 30;
+                d.animate([{ opacity: 1 }, { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }], { duration: 500 }).onfinish = () => d.remove();
             }
+            
             if (document.elementFromPoint(x, y)?.closest('.mail-box')) {
                 navigator.clipboard.writeText('bertonetommaso2@gmail.com').then(() => {
                     const addr = document.querySelector('.mail-address');
@@ -418,11 +435,9 @@
                             if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
                         } else { if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } }
 
-                        // --- MOBILE NAVBAR CENTER LOGIC ---
                         if (d && d.projectIdx !== undefined) {
                             document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('active'));
                             document.querySelectorAll('.sub-link').forEach(l => l.classList.remove('active'));
-                            
                             const grp = document.getElementById(`group-${d.projectIdx}`);
                             if (grp) {
                                 grp.classList.add('active');
@@ -430,12 +445,9 @@
                                     const sl = document.getElementById(`sublink-${d.projectIdx}-${d.subIdx}`);
                                     if (sl) sl.classList.add('active');
                                 }
-                                
-                                // Auto-scroll Navbar su Mobile
                                 if (window.innerWidth <= 768 && currentActiveGroup !== d.projectIdx) {
                                     currentActiveGroup = d.projectIdx;
                                     const nav = document.getElementById('navbar');
-                                    // Calcola il centro dello schermo - metà larghezza elemento
                                     const targetScroll = grp.offsetLeft - (window.innerWidth / 2) + (grp.offsetWidth / 2);
                                     nav.scrollTo({ left: targetScroll, behavior: 'smooth' });
                                 }
