@@ -11,15 +11,15 @@
             --vh: 100vh;
         }
 
+        /* --- CORE --- */
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; -webkit-tap-highlight-color: transparent; }
         
         html { 
             scroll-snap-type: y mandatory; 
             scroll-behavior: smooth; 
-            /* Importante per Firefox Mobile: lascia gestire lo scroll verticale al browser */
-            touch-action: pan-y; 
-            overscroll-behavior: none; 
             height: 100%;
+            /* Disabilita overscroll su PC e Mobile */
+            overscroll-behavior: none; 
         }
         
         body { 
@@ -29,10 +29,46 @@
             overflow-x: hidden; 
             transition: background-color 0.4s ease; 
             user-select: none; 
-            width: 100%; /* FIX: 100% è più sicuro di 100vw su mobile */
-            position: relative;
+            width: 100%; 
             min-height: 100vh;
+            position: relative;
         }
+
+        /* BLOCCO SCROLL MANUALE SU MOBILE */
+        @media (max-width: 768px) {
+            body { 
+                overflow: hidden; /* Blocca scroll nativo */
+                position: fixed; /* Fix estremo per evitare bounce su iOS */
+                width: 100%;
+                height: 100%;
+            }
+            /* Necessario per permettere lo scroll via JS sul container */
+            .scroll-container { 
+                height: 100vh; 
+                overflow-y: hidden; 
+            }
+        }
+
+        /* --- NAVIGATION ARROWS (MOBILE ONLY) --- */
+        .mobile-nav-arrow {
+            position: fixed;
+            left: 20px;
+            z-index: 10020;
+            font-size: 2.5rem;
+            color: var(--fg-color);
+            opacity: 0.6;
+            cursor: pointer;
+            display: none; /* Nascosto su PC */
+            transition: opacity 0.3s, transform 0.2s;
+            pointer-events: all; /* Assicura clickabilità */
+        }
+        .mobile-nav-arrow:active { transform: scale(1.2); opacity: 1; }
+        
+        #mob-up { top: 25px; }
+        #mob-down { bottom: 100px; } /* Sopra la navbar */
+
+        @media (max-width: 768px) { .mobile-nav-arrow { display: block; } }
+
 
         /* --- SIGNATURE (B.T.) --- */
         #signature-btn {
@@ -51,10 +87,7 @@
             left: -100px; top: -100px;
         }
         #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
-        
-        @media (pointer: coarse), (hover: none) { 
-            #custom-cursor { display: none !important; opacity: 0; visibility: hidden; } 
-        }
+        @media (pointer: coarse), (hover: none) { #custom-cursor { display: none !important; opacity: 0; } }
 
         @keyframes wave {
             0%, 100% { border-radius: 50%; transform: translate(-50%, -50%) scale(1); }
@@ -122,9 +155,7 @@
         h1.monumental { font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; }
         h1.monumental div { white-space: nowrap; }
         @media (min-width: 769px) { h1.monumental { font-size: 7.5rem; letter-spacing: -5px; } }
-        @media (max-width: 768px) { 
-            h1.monumental { font-size: 10vw; letter-spacing: -1px; margin: 10px 0; width: 95vw; margin-left: auto; margin-right: auto; } 
-        }
+        @media (max-width: 768px) { h1.monumental { font-size: 10vw; letter-spacing: -1px; margin: 10px 0; width: 95vw; margin-left: auto; margin-right: auto; } }
 
         em.italic-script { font-family: 'Georgia', serif; font-style: italic; display: block; }
         @media (min-width: 769px) { em.italic-script { font-size: 2rem; } }
@@ -154,8 +185,13 @@
             .presentation-text p { font-size: 0.9rem; }
         }
 
-        /* --- HINTS --- */
-        .hint-vertical { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+        /* --- HINTS (Fixed Position) --- */
+        .hint-vertical { position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+        
+        @media (min-width: 769px) { .hint-vertical { bottom: 5vh; } }
+        /* FIX: Freccia mobile alzata */
+        @media (max-width: 768px) { .hint-vertical { bottom: 18vh; } }
+
         .hint-horizontal { position: absolute; right: 5vw; top: 60%; display: flex; align-items: center; gap: 15px; pointer-events: none; }
         @media (max-width: 768px) {
             .hint-horizontal { top: 70%; flex-direction: row; gap: 8px; right: 5vw; }
@@ -163,7 +199,7 @@
         }
         .arrow { font-size: 1.2rem; }
 
-        /* --- PORTFOLIO CONTENT (Text size adjustments) --- */
+        /* --- PORTFOLIO CONTENT --- */
         .portfolio-content { position: absolute; z-index: 2; }
         .image-container { position: absolute; background: #ddd; box-shadow: 0 40px 80px rgba(0,0,0,0.1); z-index: 1; }
         .image-container img { width: 100%; height: 100%; object-fit: cover; }
@@ -171,16 +207,12 @@
         @media (min-width: 769px) {
             .portfolio-content { left: 33vw; top: 50%; transform: translateY(-50%); max-width: 450px; text-align: left; }
             .image-container { right: 5vw; top: 50%; transform: translateY(-50%); width: 420px; height: 580px; }
-            
-            /* Reduced H3 for Desktop */
-            .portfolio-content h3 { font-size: 1.1rem; margin-bottom: 1rem; opacity: 0.6; } 
+            .portfolio-content h3 { font-size: 1.1rem; margin-bottom: 1rem; opacity: 0.6; }
             .portfolio-content h2 { font-size: 5rem; margin-bottom: 1.5rem; }
         }
         @media (max-width: 768px) {
             .portfolio-content { top: 15%; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; }
             .image-container { top: 60%; left: 50%; transform: translate(-50%, -50%); width: 85vw; height: 50vh; }
-            
-            /* Reduced H3 for Mobile */
             .portfolio-content h3 { font-size: 0.75rem; margin-bottom: 0.5rem; opacity: 0.6; font-weight: 500; }
             .portfolio-content h2 { font-size: 3rem; margin-bottom: 1rem; line-height: 1; }
             .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
@@ -189,8 +221,11 @@
         /* --- ENGINE 3D --- */
         .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
         .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
+        
+        /* Contenitore per calcolare lo scroll, anche se bloccato su mobile */
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
         .snap-point { height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
+        
         .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
         .cube-face.active-content { pointer-events: all; }
 
@@ -216,6 +251,9 @@
     <div id="custom-cursor"></div>
     <nav id="navbar"></nav>
 
+    <div id="mob-up" class="mobile-nav-arrow">↑</div>
+    <div id="mob-down" class="mobile-nav-arrow">↓</div>
+
     <div class="scene"><div class="cube-wrapper" id="cube-container"></div></div>
     <div class="scroll-container" id="ghost-scroll"></div>
 
@@ -232,11 +270,14 @@
         const cube = document.getElementById('cube-container');
         const ghost = document.getElementById('ghost-scroll');
         const navbar = document.getElementById('navbar');
+        const mobUp = document.getElementById('mob-up');
+        const mobDown = document.getElementById('mob-down');
         const vh = window.innerHeight;
 
         let mouseX = 0, mouseY = 0, excitedInterval = null;
         let startX = 0, startY = 0, isDragging = false, currentXOffset = 0;
         let currentActiveGroup = null;
+        let scrollYVal = 0; // Internal scroll tracker for mobile
 
         let flatFaces = [{ type: 'landing', color: [240, 240, 240] }];
         projects.forEach((proj, pIdx) => {
@@ -254,20 +295,20 @@
             const mainIdx = 1 + (i * 4);
             const mLink = document.createElement('a');
             mLink.className = 'main-link'; mLink.href = "#"; mLink.innerHTML = `0${i+1} — ${proj.title}`;
-            mLink.onclick = (e) => { e.preventDefault(); window.scrollTo({ top: (1 + i * 4) * vh, behavior: 'smooth' }); };
+            mLink.onclick = (e) => { e.preventDefault(); scrollToVH(1 + i * 4); };
             
             const sNav = document.createElement('div');
             sNav.className = 'sub-nav';
             proj.sub.forEach((s, si) => {
                 const sl = document.createElement('a');
                 sl.className = 'sub-link'; sl.id = `sublink-${i}-${si}`; sl.href = "#"; sl.innerHTML = s;
-                sl.onclick = (e) => { e.preventDefault(); window.scrollTo({ top: (2 + i * 4 + si) * vh, behavior: 'smooth' }); };
+                sl.onclick = (e) => { e.preventDefault(); scrollToVH(2 + i * 4 + si); };
                 sNav.appendChild(sl);
             });
             group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
         });
 
-        // Faces
+        // Generate Faces
         flatFaces.forEach((data, i) => {
             const snap = document.createElement('div'); snap.className = 'snap-point'; ghost.appendChild(snap);
             const face = document.createElement('div'); face.className = 'cube-face';
@@ -319,13 +360,61 @@
             });
         });
 
-        // --- SCROLL & TOUCH LOGIC (FIXED FOR FIREFOX) ---
+        // --- NAVIGATION LOGIC ---
+        function scrollToVH(multiplier) {
+            // Se mobile: usa scroll variabile interna simulata
+            if (window.innerWidth <= 768) {
+                scrollYVal = multiplier * window.innerHeight;
+                update(); // Force update
+            } else {
+                window.scrollTo({ top: multiplier * window.innerHeight, behavior: 'smooth' });
+            }
+        }
+
+        // Mobile Nav Arrows Logic
+        mobUp.onclick = () => {
+            let currentIdx = Math.round(getScrollY() / window.innerHeight);
+            if (currentIdx > 0) scrollToVH(currentIdx - 1);
+        };
+        mobDown.onclick = () => {
+            let currentIdx = Math.round(getScrollY() / window.innerHeight);
+            if (currentIdx < flatFaces.length - 1) scrollToVH(currentIdx + 1);
+        };
+
+        function getScrollY() {
+            return window.innerWidth <= 768 ? scrollYVal : window.scrollY;
+        }
+
+        // --- TOUCH BLOCKING & SLIDER ---
         const slider = document.getElementById('main-slider');
         
-        // MOUSE (PC)
-        document.addEventListener('mousedown', (e) => { 
-            if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } 
+        // Block native scroll on mobile, allow clicks
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) e.preventDefault(); 
+        }, { passive: false });
+
+        // Touch Slider Logic
+        slider.addEventListener('touchstart', (e) => {
+            if (getScrollY() < vh * 0.5) { isDragging = false; startX = e.touches[0].clientX; slider.style.transition = 'none'; }
+        }, { passive: true });
+
+        slider.addEventListener('touchmove', (e) => {
+            const touchX = e.touches[0].clientX;
+            const diffX = touchX - startX;
+            spawnDroplets(touchX, e.touches[0].clientY); 
+
+            if (getScrollY() < vh * 0.5 && Math.abs(diffX) > 10) {
+                isDragging = true;
+                slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px)`;
+            }
+        }, { passive: false });
+
+        slider.addEventListener('touchend', (e) => {
+            if (isDragging) { isDragging = false; finishSlide(e.changedTouches[0].clientX); }
         });
+
+        // Mouse Logic
+        document.addEventListener('mousedown', (e) => { if (getScrollY() < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
             cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
@@ -335,69 +424,37 @@
             if (!isDragging) return; isDragging = false; finishSlide(e.clientX);
         });
 
-        // TOUCH (MOBILE) - Attach ONLY to slider to allow native scroll elsewhere
-        const sliderPanel = document.getElementById('main-slider');
-        
-        sliderPanel.addEventListener('touchstart', (e) => {
-            if (window.scrollY < vh * 0.5) { 
-                isDragging = false; startX = e.touches[0].clientX; startY = e.touches[0].clientY; slider.style.transition = 'none'; 
-            }
-        }, { passive: false });
-
-        sliderPanel.addEventListener('touchmove', (e) => {
-            const touchX = e.touches[0].clientX;
-            const touchY = e.touches[0].clientY;
-            spawnDroplets(touchX, touchY); // Trail
-
-            const diffX = touchX - startX;
-            const diffY = touchY - startY;
-
-            // Logica: Se movimento orizzontale dominante E siamo in cima -> Blocca scroll vert e muovi slider
-            if (window.scrollY < vh * 0.5 && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
-                isDragging = true; 
-                e.preventDefault(); // Stop native scroll
-                e.stopPropagation();
-                slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px)`;
-            }
-        }, { passive: false });
-
-        sliderPanel.addEventListener('touchend', (e) => {
-            if (isDragging) { isDragging = false; finishSlide(e.changedTouches[0].clientX); }
-        });
-
-        // Global TouchMove for trail only (passive allowed)
-        document.addEventListener('touchmove', (e) => {
-            // Se non stiamo draggando lo slider, generiamo solo scia
-            if (!isDragging) spawnDroplets(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true });
-
-
         function finishSlide(endX) {
             slider.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             if (Math.abs(endX - startX) > 100) currentXOffset = (endX - startX < 0) ? -window.innerWidth : 0;
             slider.style.transform = `translateX(${currentXOffset}px)`;
         }
 
-        signature.onclick = () => { window.scrollTo({ top: 0, behavior: 'smooth' }); currentXOffset = -window.innerWidth; slider.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transform = `translateX(${currentXOffset}px)`; };
+        signature.onclick = () => { scrollToVH(0); currentXOffset = -window.innerWidth; slider.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transform = `translateX(${currentXOffset}px)`; };
 
-        // Interactions
+        // --- INTERACTIONS (PC RESTRICTED) ---
         document.addEventListener('mouseover', (e) => {
-            if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect')) cursor.classList.add('active');
+            if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect, .mobile-nav-arrow')) cursor.classList.add('active');
         });
-        document.addEventListener('mouseout', (e) => {
-            if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect')) cursor.classList.remove('active');
-        });
+        document.addEventListener('mouseout', (e) => cursor.classList.remove('active'));
 
-        document.addEventListener('mousedown', (e) => spawnDroplets(e.clientX, e.clientY));
+        document.addEventListener('mousedown', (e) => {
+            // FIX: Spawn only on specific targets or if it's the last page
+            const isClickable = e.target.closest('a, #signature-btn, .box, .mail-box, .final-links, .mobile-nav-arrow');
+            const isLastPage = (getScrollY() / vh) > (flatFaces.length - 1.5);
+            
+            if (isClickable || isLastPage) {
+                spawnDroplets(e.clientX, e.clientY);
+            }
+        });
         
         function spawnDroplets(x, y) {
             const isMobile = window.innerWidth <= 768;
-            const count = isMobile ? 2 : 4; 
+            const count = isMobile ? 1 : 4; 
             for (let i = 0; i < count; i++) {
                 const d = document.createElement('div'); d.className = 'droplet'; document.body.appendChild(d);
                 d.style.left = x + 'px'; d.style.top = y + 'px';
-                const angle = Math.random() * Math.PI * 2;
-                const dist = isMobile ? 15 : 30;
+                const angle = Math.random() * Math.PI * 2; const dist = isMobile ? 15 : 30;
                 d.animate([{ opacity: 1 }, { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }], { duration: 500 }).onfinish = () => d.remove();
             }
             if (document.elementFromPoint(x, y)?.closest('.mail-box')) {
@@ -409,14 +466,31 @@
             }
         }
 
+        // Engine
         function lerp(c1, c2, f) { return c1.map((v, i) => Math.round(v + (c2[i] - v) * f)); }
+        
         function update() {
-            const sY = window.scrollY; const progress = sY / vh; const idx = Math.floor(progress); const f = progress - idx;
+            // Smooth Scroll Simulation for Mobile
+            if (window.innerWidth <= 768) {
+                // Interpolazione semplice per lo scroll simulato
+                // In una versione reale si userebbe un lerp sulla variabile
+                // Qui è diretto per reattività coi bottoni
+            }
+
+            const sY = getScrollY();
+            const progress = sY / vh;
+            const idx = Math.floor(progress);
+            const f = progress - idx;
+            
             let rgb = (idx < flatFaces.length - 1) ? lerp(flatFaces[idx].color, flatFaces[idx + 1].color, f) : flatFaces[flatFaces.length - 1].color;
             const bright = (rgb[0]*299 + rgb[1]*587 + rgb[2]*114)/1000;
-            document.documentElement.style.setProperty('--bg-color', `rgb(${rgb.join(',')})`);
-            document.documentElement.style.setProperty('--fg-color', bright > 130 ? 'rgb(40,40,40)' : 'rgb(245,245,245)');
+            document.body.style.backgroundColor = `rgb(${rgb.join(',')})`;
+            document.body.style.color = bright > 130 ? 'rgb(40,40,40)' : 'rgb(245,245,245)';
             signature.style.filter = `invert(${bright > 130 ? 0 : 1})`;
+            
+            // Frecce colore
+            mobUp.style.color = document.body.style.color;
+            mobDown.style.color = document.body.style.color;
 
             if (sY > vh * 0.4 && sY < (flatFaces.length - 1.5) * vh) navbar.classList.add('visible');
             else navbar.classList.remove('visible');
@@ -425,19 +499,16 @@
             fcs.forEach((face, i) => {
                 const dist = sY - (i * vh); const off = dist / vh;
                 if (Math.abs(off) < 1.1) {
+                    face.style.display = 'flex';
                     face.style.transform = `translateY(${-dist}px) translateZ(${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
                     face.style.opacity = Math.max(0, 1 - Math.pow(Math.abs(off), 2.2));
                     if (Math.abs(off) < 0.5) {
                         face.classList.add('active-content'); const d = flatFaces[i];
-                        if (d.type === 'final-call') {
-                            // FIX: Particelle auto SOLO su dispositivi con puntatore fine (Mouse)
-                            if (window.matchMedia("(pointer: fine)").matches) {
-                                cursor.classList.add('active');
-                                if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
-                            }
-                        } else { 
-                            if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } 
-                        }
+                        
+                        if (d.type === 'final-call' && window.matchMedia("(pointer: fine)").matches) {
+                            cursor.classList.add('active');
+                            if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
+                        } else { if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } }
 
                         if (d && d.projectIdx !== undefined) {
                             document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('active'));
@@ -458,11 +529,12 @@
                             }
                         }
                     } else { face.classList.remove('active-content'); }
-                } else { face.style.opacity = 0; face.classList.remove('active-content'); }
+                } else { face.style.display = 'none'; face.style.opacity = 0; }
             });
             requestAnimationFrame(update);
         }
-        update(); window.addEventListener('resize', () => location.reload());
+        update(); 
+        window.addEventListener('resize', () => { vh = window.innerHeight; location.reload(); });
     </script>
 </body>
 </html>
