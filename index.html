@@ -16,7 +16,6 @@
         html { 
             scroll-snap-type: y mandatory; 
             scroll-behavior: smooth; 
-            /* Importante per permettere lo scroll verticale nativo */
             touch-action: pan-y; 
         }
         
@@ -59,7 +58,7 @@
             pointer-events: none; z-index: 10004; mix-blend-mode: difference; transform: translate(-50%, -50%);
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR / NAVBAR --- */
         nav { position: fixed; z-index: 10000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
         nav.visible { opacity: 1; pointer-events: all; }
 
@@ -75,25 +74,35 @@
                 bottom: 20px; left: 0; width: 100%; 
                 display: flex; flex-direction: row; gap: 20px; 
                 overflow-x: auto; padding: 10px 20px;
-                scroll-snap-type: x mandatory;
+                /* Rimuoviamo scroll-snap orizzontale per lasciare che il JS centri fluido */
                 justify-content: flex-start;
                 background: linear-gradient(to top, var(--bg-color) 0%, transparent 100%);
+                /* Nascondi scrollbar */
+                -ms-overflow-style: none; scrollbar-width: none; 
             }
-            .nav-group { display: flex; flex-direction: column; flex-shrink: 0; scroll-snap-align: start; }
+            nav::-webkit-scrollbar { display: none; }
+            
+            .nav-group { display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.3s ease; }
             .sub-nav { display: none; }
-            .main-link { font-size: 0.7rem !important; opacity: 0.5 !important; }
-            .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.1); }
+            .main-link { font-size: 0.75rem !important; opacity: 0.4 !important; white-space: nowrap; }
+            
+            /* Stato Attivo Mobile: Più grande e opaco */
+            .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.15); font-weight: 900; }
+            /* Indicatore visivo attivo mobile */
+            .nav-group.active .main-link::before { width: 100%; height: 2px; position: absolute; bottom: -5px; left: 0; }
         }
 
         .main-link { 
             color: var(--fg-color); text-decoration: none; font-size: 0.75rem; font-weight: 900; 
             text-transform: uppercase; letter-spacing: 2px; opacity: 0.2; 
-            display: flex; align-items: center; gap: 12px; transition: 0.4s; 
+            display: flex; align-items: center; gap: 12px; transition: 0.4s; position: relative;
         }
         .main-link::before { content: ''; width: 12px; height: 2px; background: var(--fg-color); transition: 0.4s; }
-        .main-link:hover { opacity: 0.7 !important; }
-        .nav-group.active .main-link { opacity: 1 !important; transform: translateX(5px); }
-        .nav-group.active .main-link::before { width: 25px; }
+        @media (min-width: 769px) {
+            .main-link:hover { opacity: 0.7 !important; }
+            .nav-group.active .main-link { opacity: 1 !important; transform: translateX(5px); }
+            .nav-group.active .main-link::before { width: 25px; }
+        }
 
         .sub-link { color: var(--fg-color); text-decoration: none; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; }
         .sub-link:hover { opacity: 0.8 !important; transform: translateX(3px); }
@@ -163,12 +172,19 @@
             .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
         }
 
-        /* --- ENGINE 3D --- */
+        /* --- ENGINE 3D & SCROLL PHYSICS --- */
         .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
         .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
-        /* Scroll container deve avere altezza per permettere scroll */
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
-        .snap-point { height: 100vh; scroll-snap-align: start; pointer-events: none; }
+        
+        /* FIX SCROLL VELOCITY: scroll-snap-stop: always FORCE STOP */
+        .snap-point { 
+            height: 100vh; 
+            scroll-snap-align: start; 
+            scroll-snap-stop: always; /* KEY FIX: Obbliga a fermarsi a ogni sezione */
+            pointer-events: none; 
+        }
+        
         .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
         .cube-face.active-content { pointer-events: all; }
 
@@ -214,6 +230,7 @@
 
         let mouseX = 0, mouseY = 0, excitedInterval = null;
         let startX = 0, startY = 0, isDragging = false, currentXOffset = 0;
+        let currentActiveGroup = null; // Track active group for mobile scroll
 
         let flatFaces = [{ type: 'landing', color: [240, 240, 240] }];
         projects.forEach((proj, pIdx) => {
@@ -224,7 +241,7 @@
         });
         flatFaces.push({ type: 'final-call', title: "CHECK ME OUT HERE!", color: [10, 10, 10] });
 
-        // Sidebar
+        // Sidebar Generation
         projects.forEach((proj, i) => {
             const group = document.createElement('div');
             group.className = 'nav-group'; group.id = `group-${i}`;
@@ -232,6 +249,8 @@
             const mLink = document.createElement('a');
             mLink.className = 'main-link'; mLink.href = "#"; mLink.innerHTML = `0${i+1} — ${proj.title}`;
             mLink.onclick = (e) => { e.preventDefault(); window.scrollTo({ top: (1 + i * 4) * vh, behavior: 'smooth' }); };
+            
+            // Subnav only visible on PC via CSS
             const sNav = document.createElement('div');
             sNav.className = 'sub-nav';
             proj.sub.forEach((s, si) => {
@@ -243,7 +262,7 @@
             group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
         });
 
-        // Faces
+        // Faces Rendering
         flatFaces.forEach((data, i) => {
             const snap = document.createElement('div'); snap.className = 'snap-point'; ghost.appendChild(snap);
             const face = document.createElement('div'); face.className = 'cube-face';
@@ -261,13 +280,7 @@
                         <div class="hint-horizontal"><span class="italic-script-small">who am i?</span><span class="arrow">→</span></div>
                     </div>
                     <div class="panel">
-                        <div class="presentation-content">
-                            <div class="presentation-rect"></div>
-                            <div class="presentation-text">
-                                <h2>Design with<br>Intention.</h2>
-                                <p>Industrial Designer focused on technical precision and emotive forms.</p>
-                            </div>
-                        </div>
+                        <div class="presentation-content"><div class="presentation-rect"></div><div class="presentation-text"><h2>Design with<br>Intention.</h2><p>Industrial Designer focused on technical precision and emotive forms.</p></div></div>
                     </div>
                 </div>`;
             } else if (data.type === 'main') {
@@ -301,10 +314,9 @@
             });
         });
 
-        // --- SMART TOUCH LOGIC (Crucial for Scrolling) ---
+        // Touch & Slide Logic
         const slider = document.getElementById('main-slider');
         
-        // Desktop Mouse Drag
         document.addEventListener('mousedown', (e) => { if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
@@ -315,44 +327,29 @@
             if (!isDragging) return; isDragging = false; finishSlide(e.clientX);
         });
 
-        // Mobile Touch (Fixes Scroll Issue)
         document.addEventListener('touchstart', (e) => {
             if (window.scrollY < vh * 0.5) { 
-                isDragging = false; // Reset drag state
-                startX = e.touches[0].clientX; 
-                startY = e.touches[0].clientY;
-                slider.style.transition = 'none'; 
+                isDragging = false; startX = e.touches[0].clientX; startY = e.touches[0].clientY; slider.style.transition = 'none'; 
             }
         }, { passive: false });
 
         document.addEventListener('touchmove', (e) => {
-            const touchX = e.touches[0].clientX;
-            const touchY = e.touches[0].clientY;
-            const diffX = touchX - startX;
-            const diffY = touchY - startY;
-
-            // Logica Intelligente:
-            // Se il movimento è più orizzontale che verticale, e siamo sulla landing...
+            const diffX = e.touches[0].clientX - startX;
+            const diffY = e.touches[0].clientY - startY;
+            // Solo slide orizzontale se siamo in alto e il gesto è chiaramente orizzontale
             if (window.scrollY < vh * 0.5 && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
-                isDragging = true;
-                e.preventDefault(); // Blocca lo scroll nativo solo in questo caso
-                const move = Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX));
-                slider.style.transform = `translateX(${move}px)`;
+                isDragging = true; e.preventDefault();
+                slider.style.transform = `translateX(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px)`;
             }
-            // Altrimenti lascia che il browser faccia lo scroll nativo (nessun e.preventDefault)
         }, { passive: false });
 
         document.addEventListener('touchend', (e) => {
-            if (isDragging) {
-                isDragging = false;
-                finishSlide(e.changedTouches[0].clientX);
-            }
+            if (isDragging) { isDragging = false; finishSlide(e.changedTouches[0].clientX); }
         });
 
         function finishSlide(endX) {
             slider.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-            const deltaX = endX - startX;
-            if (Math.abs(deltaX) > 100) currentXOffset = (deltaX < 0) ? -window.innerWidth : 0;
+            if (Math.abs(endX - startX) > 100) currentXOffset = (endX - startX < 0) ? -window.innerWidth : 0;
             slider.style.transform = `translateX(${currentXOffset}px)`;
         }
 
@@ -387,7 +384,6 @@
             }
         }
 
-        // Engine
         function lerp(c1, c2, f) { return c1.map((v, i) => Math.round(v + (c2[i] - v) * f)); }
         function update() {
             const sY = window.scrollY; const progress = sY / vh; const idx = Math.floor(progress); const f = progress - idx;
@@ -413,11 +409,28 @@
                             if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
                         } else { if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } }
 
+                        // --- MOBILE NAVBAR CENTER LOGIC ---
                         if (d && d.projectIdx !== undefined) {
                             document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('active'));
                             document.querySelectorAll('.sub-link').forEach(l => l.classList.remove('active'));
+                            
                             const grp = document.getElementById(`group-${d.projectIdx}`);
-                            if (grp) { grp.classList.add('active'); if (d.type === 'sub') { const sl = document.getElementById(`sublink-${d.projectIdx}-${d.subIdx}`); if (sl) sl.classList.add('active'); } }
+                            if (grp) {
+                                grp.classList.add('active');
+                                if (d.type === 'sub') {
+                                    const sl = document.getElementById(`sublink-${d.projectIdx}-${d.subIdx}`);
+                                    if (sl) sl.classList.add('active');
+                                }
+                                
+                                // Auto-scroll Navbar su Mobile
+                                if (window.innerWidth <= 768 && currentActiveGroup !== d.projectIdx) {
+                                    currentActiveGroup = d.projectIdx;
+                                    const nav = document.getElementById('navbar');
+                                    // Calcola il centro dello schermo - metà larghezza elemento
+                                    const targetScroll = grp.offsetLeft - (window.innerWidth / 2) + (grp.offsetWidth / 2);
+                                    nav.scrollTo({ left: targetScroll, behavior: 'smooth' });
+                                }
+                            }
                         }
                     } else { face.classList.remove('active-content'); }
                 } else { face.style.opacity = 0; face.classList.remove('active-content'); }
