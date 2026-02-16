@@ -171,7 +171,7 @@
         @media (min-width: 769px) { .hint-vertical { bottom: 5vh; } }
         @media (max-width: 768px) { .hint-vertical { bottom: 18vh; } }
 
-        .hint-horizontal { position: absolute; right: 5vw; top: 60%; display: flex; align-items: center; gap: 15px; pointer-events: none; }
+        .hint-horizontal { position: absolute; right: 5vw; top: 60%; display: flex; align-items: center; gap: 15px; pointer-events: all; }
         @media (max-width: 768px) {
             .hint-horizontal { top: 70%; flex-direction: row; gap: 8px; right: 5vw; }
             .hint-horizontal span:first-child { display: block; opacity: 0.8; } 
@@ -407,7 +407,10 @@
                             <span class="italic-script-small">some of what i've done</span>
                             <span class="arrow">↓</span>
                         </div>
-                        <div class="hint-horizontal"><span class="italic-script-small">who am i?</span><span class="arrow">→</span></div>
+                        <div class="hint-horizontal" onclick="openPresentation()">
+    <span class="italic-script-small">who am i?</span>
+    <span class="arrow">→</span>
+</div>
                     </div>
                     <div class="panel">
                         <div class="presentation-content"><img src="foto-meno.jpg" class="presentation-rect" style="object-fit: cover;"><div class="presentation-text"><h2>Hi there!</h2><p>I’m Tommaso - 21 year old , studying Industrial Design at Politecnico di Torino. Keen to upgrade my software and practical skills, I’ve always been open to innovations and challenges to better myself. Through my projects I aim to convey functionality and a balanced aestethics.</p></div></div>
@@ -631,6 +634,16 @@
         }
         update(); 
         window.addEventListener('resize', () => { vh = window.innerHeight; if(!isMobile()) targetScrollY = window.scrollY; });
+        // --- FUNZIONE PER LA FRECCIA "WHO AM I" ---
+        window.openPresentation = function() {
+            const slider = document.getElementById('main-slider');
+            // Imposta lo spostamento negativo (verso sinistra) per mostrare il secondo pannello
+            currentXOffset = -window.innerWidth; 
+            slider.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)';
+            slider.style.transform = `translate3d(${currentXOffset}px, 0, 0)`;
+        };
+
+    </script> </body>
     </script>
 </body>
 </html>
