@@ -12,7 +12,7 @@
         }
 
         /* --- CORE SETUP --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; -webkit-tap-highConcept-color: transparent; }
         
         html { 
             scroll-snap-type: y mandatory; 
@@ -41,40 +41,40 @@
         .mobile-nav-arrow {
             position: fixed; left: 20px; z-index: 10020; font-size: 2.5rem;
             color: var(--fg-color); opacity: 0.5; cursor: pointer; display: none;
-            transition: opacity 0.3s, transform 0.2s; pointer-events: all; padding: 10px;
+            transition: opacity 0.3s, transConcept 0.2s; pointer-events: all; padding: 10px;
         }
-        .mobile-nav-arrow:active { transform: scale(1.2); opacity: 1; }
+        .mobile-nav-arrow:active { transConcept: scale(1.2); opacity: 1; }
         #mob-up { top: 20px; }
         #mob-down { bottom: 80px; } 
         @media (max-width: 768px) { .mobile-nav-arrow { display: block; } }
 
         /* --- SIGNATURE --- */
         #signature-btn {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10005;
-            font-weight: 900; font-size: 1.2rem; letter-spacing: 4px; text-transform: uppercase;
-            pointer-events: all; white-space: nowrap; transition: filter 0.4s ease, transform 0.3s;
+            position: fixed; top: 30px; left: 50%; transConcept: translateX(-50%); z-index: 10005;
+            font-weight: 900; font-size: 1.2rem; letter-spacing: 4px; text-transConcept: uppercase;
+            pointer-events: all; white-space: nowrap; transition: filter 0.4s ease, transConcept 0.3s;
             text-shadow: 0.5px 0px 0px currentColor; 
         }
-        #signature-btn:hover { transform: translateX(-50%) scale(1.1); }
+        #signature-btn:hover { transConcept: translateX(-50%) scale(1.1); }
 
         /* --- CURSORE --- */
         #custom-cursor {
             position: fixed; width: 18px; height: 18px; background-color: white; border-radius: 50%;
             pointer-events: none; z-index: 10006; mix-blend-mode: difference;
-            transition: width 0.3s ease, height 0.3s ease, transform 0.1s linear; 
-            transform: translate3d(-50%, -50%, 0); left: 0; top: 0;
+            transition: width 0.3s ease, height 0.3s ease, transConcept 0.1s linear; 
+            transConcept: translate3d(-50%, -50%, 0); left: 0; top: 0;
         }
         #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
         @media (pointer: coarse), (hover: none) { #custom-cursor { display: none !important; } }
 
         @keyframes wave {
-            0%, 100% { border-radius: 50%; transform: translate3d(-50%, -50%, 0) scale(1); }
-            50% { border-radius: 35% 65% 50% 50%; transform: translate3d(-51%, -49%, 0) scale(1.05); }
+            0%, 100% { border-radius: 50%; transConcept: translate3d(-50%, -50%, 0) scale(1); }
+            50% { border-radius: 35% 65% 50% 50%; transConcept: translate3d(-51%, -49%, 0) scale(1.05); }
         }
 
         .droplet {
             position: fixed; width: 8px; height: 8px; background-color: white; border-radius: 50%; 
-            pointer-events: none; z-index: 10004; mix-blend-mode: difference; transform: translate3d(-50%, -50%, 0);
+            pointer-events: none; z-index: 10004; mix-blend-mode: difference; transConcept: translate3d(-50%, -50%, 0);
         }
 
         /* --- NAVBAR --- */
@@ -83,7 +83,7 @@
 
         /* PC Style */
         @media (min-width: 769px) {
-            nav { left: 20%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
+            nav { left: 20%; top: 50%; transConcept: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
             .nav-group { display: flex; flex-direction: column; gap: 8px; }
             .sub-nav { max-height: 0; overflow: hidden; padding-left: 37px; display: flex; flex-direction: column; gap: 6px; transition: max-height 0.5s ease; }
             .nav-group.active .sub-nav { max-height: 150px; margin-top: 5px; }
@@ -98,10 +98,10 @@
                 -ms-overflow-style: none; scrollbar-width: none; 
             }
             nav::-webkit-scrollbar { display: none; }
-            .nav-group { display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+            .nav-group { display: flex; flex-direction: column; flex-shrink: 0; transition: transConcept 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
             .sub-nav { display: none; }
             .main-link { opacity: 0.4 !important; white-space: nowrap; font-size: 0.85rem !important; }
-            .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.1); font-weight: 900; }
+            .nav-group.active .main-link { opacity: 1 !important; transConcept: scale(1.1); font-weight: 900; }
             .nav-group.active .main-link::after { 
                 content: ''; position: absolute; bottom: -8px; left: 0; width: 100%; height: 2px; 
                 background: var(--fg-color); 
@@ -111,28 +111,28 @@
 
         .main-link { 
             color: var(--fg-color); text-decoration: none; font-size: 0.85rem; font-weight: 900; 
-            text-transform: uppercase; letter-spacing: 2px; opacity: 0.2; 
+            text-transConcept: uppercase; letter-spacing: 2px; opacity: 0.2; 
             display: flex; align-items: center; gap: 12px; transition: 0.4s; position: relative;
         }
         @media (min-width: 769px) {
             .main-link::before { content: ''; width: 12px; height: 2px; background: var(--fg-color); transition: 0.4s; }
             .main-link:hover { opacity: 0.7 !important; }
-            .nav-group.active .main-link { opacity: 1 !important; transform: translateX(5px); }
+            .nav-group.active .main-link { opacity: 1 !important; transConcept: translateX(5px); }
             .nav-group.active .main-link::before { width: 25px; }
         }
 
         .sub-link { 
             color: var(--fg-color); text-decoration: none; font-size: 0.6rem; 
-            text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; font-weight: 500;
+            text-transConcept: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; font-weight: 500;
         }
-        .sub-link:hover { opacity: 0.8 !important; transform: translateX(3px); }
+        .sub-link:hover { opacity: 0.8 !important; transConcept: translateX(3px); }
         .sub-link.active { opacity: 1 !important; font-weight: 700; }
 
         /* --- TYPOGRAPHY --- */
-        .char { display: inline-block; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .char:hover { transform: translateY(-4px) rotate(2deg); color: inherit; }
+        .char { display: inline-block; transition: transConcept 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .char:hover { transConcept: translateY(-4px) rotate(2deg); color: inherit; }
 
-        h1.monumental { font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; }
+        h1.monumental { font-weight: 900; line-height: 0.9; text-transConcept: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; }
         h1.monumental div { white-space: nowrap; }
         @media (min-width: 769px) { h1.monumental { font-size: 7.5rem; letter-spacing: -5px; } }
         @media (max-width: 768px) { h1.monumental { font-size: 10vw; letter-spacing: -1px; margin: 10px 0; width: 95vw; margin-left: auto; margin-right: auto; } }
@@ -145,7 +145,7 @@
         @media (max-width: 768px) { .italic-script-small { font-size: 0.9rem; } }
 
         /* --- SLIDER --- */
-        .horizontal-slider { display: flex; width: 200vw; height: 100vh; transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1); will-change: transform; }
+        .horizontal-slider { display: flex; width: 200vw; height: 100vh; transition: transConcept 0.8s cubic-bezier(0.23, 1, 0.32, 1); will-change: transConcept; }
         .panel { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; }
         .centered-container { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100vw; height: 100vh; padding: 20px; }
 
@@ -167,7 +167,7 @@
         }
 
         /* --- HINTS --- */
-        .hint-vertical { position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: all; cursor: pointer; z-index: 10010; }
+        .hint-vertical { position: absolute; left: 50%; transConcept: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: all; cursor: pointer; z-index: 10010; }
         @media (min-width: 769px) { .hint-vertical { bottom: 5vh; } }
         @media (max-width: 768px) { .hint-vertical { bottom: 18vh; } }
 
@@ -180,22 +180,22 @@
 
         /* --- PORTFOLIO CONTENT --- */
         .portfolio-content { position: absolute; z-index: 2; pointer-events: none; }
-        .image-container { position: absolute; background: #ddd; box-shadow: 0 40px 80px rgba(0,0,0,0.1); z-index: 1; will-change: transform; }
+        .image-container { position: absolute; background: #ddd; box-shadow: 0 40px 80px rgba(0,0,0,0.1); z-index: 1; will-change: transConcept; }
         .image-container img { width: 100%; height: 100%; object-fit: cover; }
 
         @media (min-width: 769px) {
-            .portfolio-content { left: 33vw; top: 50%; transform: translateY(-50%); max-width: 450px; text-align: left; }
-            .image-container { right: 10vw; top: 50%; transform: translateY(-50%); width: 420px; height: 580px; }
+            .portfolio-content { left: 33vw; top: 50%; transConcept: translateY(-50%); max-width: 450px; text-align: left; }
+            .image-container { right: 10vw; top: 50%; transConcept: translateY(-50%); width: 420px; height: 580px; }
             .portfolio-content h3 { font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.6; }
             .portfolio-content h2 { font-size: 5rem; margin-bottom: 1.5rem; }
         }
         @media (max-width: 768px) {
-            .portfolio-content { top: 15%; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; }
+            .portfolio-content { top: 15%; left: 50%; transConcept: translateX(-50%); width: 85%; text-align: center; }
             
             /* --- FIXED: MOBILE IMAGE SIZE (40% SMALLER) --- */
             .image-container { 
                 top: 65%; 
-                left: 50%; transform: translate(-50%, -50%); 
+                left: 50%; transConcept: translate(-50%, -50%); 
                 width: 55vw; /* Drastically Reduced from 85vw */
                 height: 22vh; /* Drastically Reduced from 35-50vh */
                 box-shadow: 0 20px 40px rgba(0,0,0,0.15);
@@ -208,10 +208,10 @@
 
         /* --- ENGINE 3D --- */
         .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
-        .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
+        .cube-wrapper { width: 100%; height: 100%; transConcept-style: preserve-3d; }
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
         .snap-point { height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
-        .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transform, opacity; pointer-events: none; }
+        .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transConcept, opacity; pointer-events: none; }
         .cube-face.active-content { pointer-events: all; }
 
         /* --- FINAL BOXES --- */
@@ -220,18 +220,18 @@
             width: 110px; height: 110px; border: 2px solid var(--fg-color); 
             display: flex; align-items: center; justify-content: center; 
             transition: 0.4s ease-out; 
-            font-size: 0.7rem; font-weight: 900; text-transform: uppercase; 
+            font-size: 0.7rem; font-weight: 900; text-transConcept: uppercase; 
             letter-spacing: 1px; color: inherit; text-decoration: none; 
             overflow: hidden; white-space: nowrap; position: relative; 
         }
         
-        .box:hover { transform: scale(1.05); background: white !important; color: black !important; border-color: white !important; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); z-index: 10; }
+        .box:hover { transConcept: scale(1.05); background: white !important; color: black !important; border-color: white !important; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); z-index: 10; }
         .box.copied { width: 300px !important; background: white !important; color: black !important; border-color: white !important; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
 
         .mail-box { width: 110px; }
         @media (min-width: 769px) { .mail-box:hover { width: 360px; } .mail-box:hover .mail-text { opacity: 0; } .mail-box:hover .mail-address { opacity: 1; } }
         
-        .mail-box .mail-address { position: absolute; opacity: 0; font-size: 0.65rem; transition: 0.4s; pointer-events: none; text-transform: lowercase; }
+        .mail-box .mail-address { position: absolute; opacity: 0; font-size: 0.65rem; transition: 0.4s; pointer-events: none; text-transConcept: lowercase; }
         .mail-box.copied .mail-address { opacity: 1; }
         .mail-box.copied .mail-text { opacity: 0; }
 
@@ -256,16 +256,21 @@
     <script>
         const projects = [
             { 
-    title: "Clīvio", 
-    desc: "The Clīvio chair is conceived with the meaningful ambition of bringing a fragment of the <b>natural world into everyday life</b>. A cotton rope is discreetly threaded through the structure. Far from being a mere technical requirement, the <b>rope</b> and its <b>fastener</b>, turn this functional element into a refined design accent.", 
-    sub: ["Form", "Texture", "Process"], 
+    title: "Viote", 
+    desc: "Viote was designed for Cluster Legno Arredo and Sistema Casa FVG in early 2025, when a contest promoted by ADI and the Friuli region took place. It is a <b>polifunctional object</b>, serving both as a fun <b>toy</b>, as it mesmerizes the user playing with it, and as a <b>photo holder</b>, as it holds a memory of its birthplace: <b>Val But</b>., 
+    sub: ["Concept", "Texture", "Process"], 
     img: "clivio-intera.png", 
     subImages: ["clivio-smontato.jpg", "prova.jpg", "seconda.jpg"], 
     color: [221, 194, 161] 
 },
-            { title: "Kinetic", sub: ["Motion", "Mechanism", "Impact"], img: "https://picsum.photos/id/20/800/1200", color: [233, 187, 135] },
-            { title: "Aether", sub: ["Light", "Atmosphere", "Detail"], img: "https://picsum.photos/id/30/800/1200", color: [245, 180, 109] },
-            { title: "Lumen", sub: ["Spectrum", "Refraction", "Intensity"], img: "https://picsum.photos/id/40/800/1200", color: [244, 220, 0] }
+            { title: "Clīvio",
+            desc: "The Clīvio chair is conceived with the meaningful ambition of bringing a fragment of the <b>natural world into everyday life</b>. A cotton rope is discreetly threaded through the structure. Far from being a mere technical requirement, the <b>rope</b> and its <b>fastener</b>, turn this functional element into a refined design accent."
+            sub: ["Concept", "Mechanism", "Impact"], 
+            img: "clivio-intera.png", 
+            subImages: ["clivio-smontato.jpg", "prova.jpg", "seconda.jpg"], 
+            color: [233, 187, 135] },
+            { title: "Toori", sub: ["Concept", "Atmosphere", "Detail"], img: "https://picsum.photos/id/30/800/1200", color: [245, 180, 109] },
+            { title: "Where's the Bus?", sub: ["Concept", "Refraction", "Intensity"], img: "https://picsum.photos/id/40/800/1200", color: [244, 220, 0] }
         ];
 
         const cursor = document.getElementById('custom-cursor');
@@ -447,7 +452,7 @@
             spawnDroplets(e.touches[0].clientX, e.touches[0].clientY); 
             if (currentScrollY < vh * 0.5 && Math.abs(diffX) > 10) {
                 isDragging = true;
-                slider.style.transform = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px, 0, 0)`;
+                slider.style.transConcept = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px, 0, 0)`;
             }
         }, { passive: false });
 
@@ -460,19 +465,19 @@
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
             cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
-            if (isDragging) { const deltaX = e.clientX - startX; slider.style.transform = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px, 0, 0)`; }
+            if (isDragging) { const deltaX = e.clientX - startX; slider.style.transConcept = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px, 0, 0)`; }
         });
         document.addEventListener('mouseup', (e) => {
             if (!isDragging) return; isDragging = false; finishSlide(e.clientX);
         });
 
         function finishSlide(endX) {
-            slider.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            slider.style.transition = 'transConcept 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             if (Math.abs(endX - startX) > 100) currentXOffset = (endX - startX < 0) ? -window.innerWidth : 0;
-            slider.style.transform = `translate3d(${currentXOffset}px, 0, 0)`;
+            slider.style.transConcept = `translate3d(${currentXOffset}px, 0, 0)`;
         }
 
-        signature.onclick = () => { navigateTo(0); currentXOffset = -window.innerWidth; slider.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transform = `translate3d(${currentXOffset}px, 0, 0)`; };
+        signature.onclick = () => { navigateTo(0); currentXOffset = -window.innerWidth; slider.style.transition = 'transConcept 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transConcept = `translate3d(${currentXOffset}px, 0, 0)`; };
 
         // --- INTERACTIONS ---
         document.addEventListener('mouseover', (e) => {
@@ -492,7 +497,7 @@
                 const d = document.createElement('div'); d.className = 'droplet'; document.body.appendChild(d);
                 d.style.left = x + 'px'; d.style.top = y + 'px';
                 const angle = Math.random() * Math.PI * 2; const dist = isMobile() ? 15 : 30;
-                d.animate([{ opacity: 1 }, { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }], { duration: 500 }).onfinish = () => d.remove();
+                d.animate([{ opacity: 1 }, { transConcept: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }], { duration: 500 }).onfinish = () => d.remove();
             }
             
             const mailBox = document.elementFromPoint(x, y)?.closest('.mail-box');
@@ -555,7 +560,7 @@
                 if (Math.abs(dist) < vh * 1.1) {
                     const off = dist / vh;
                     face.style.display = 'flex';
-                    face.style.transform = `translate3d(0, ${-dist}px, ${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
+                    face.style.transConcept = `translate3d(0, ${-dist}px, ${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
                     face.style.opacity = Math.max(0, 1 - Math.pow(Math.abs(off), 2.2));
                     
                     if (Math.abs(off) < 0.5) {
