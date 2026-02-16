@@ -282,7 +282,7 @@
             },
             { 
                 title: "Clīvio", 
-                desc: "The Clīvio chair is conceived with the meaningful ambition of bringing a fragment of the <b>natural world into everyday life</b>. A cotton rope is discreetly threaded through the structure. Far from being a mere technical requirement, the <b>rope</b> and its <b>fastener</b>, turn this functional element into a refined design accent.",
+                desc: "The Clīvio chair is conceived with the meaningful ambition of bringing a fragment of the <b>natural world into everyday life</b>. The <b>cotton rope</b> and its <b>fastener</b> turn a functional element into a distinctive mark.",
                 sub: ["Concept", "Detail", "Output"], 
                 img: "clivio-intera.png", 
                 subImages: ["foresta.jpg", "clivio-smontato2.jpg", "clivio-ambiente.jpeg"], 
@@ -335,8 +335,25 @@
                 color: proj.color 
             });
 
-            // 2. Sottosezioni (cerca l'immagine specifica)
-            proj.sub.forEach((sName, sIdx) => {
+           // 2. Sottosezioni (MODIFICATO PER LEGGERE IL TESTO)
+            proj.sub.forEach((subItem, sIdx) => {
+                // Controllo: Esiste una subImage?
+                let specificImg = proj.img; 
+                if (proj.subImages && proj.subImages[sIdx]) {
+                    specificImg = proj.subImages[sIdx];
+                }
+
+                flatFaces.push({ 
+                    type: 'sub', 
+                    title: proj.title, 
+                    subTitle: subItem.title, // Legge il titolo dal nuovo oggetto
+                    desc: subItem.text,      // Legge il testo dal nuovo oggetto
+                    projectIdx: pIdx, 
+                    img: specificImg, 
+                    subIdx: sIdx, 
+                    color: proj.color 
+                });
+            });
                 // Controllo: Esiste una subImage per questo indice? Se sì, usala. Altrimenti usa la principale.
                 let specificImg = proj.img; 
                 if (proj.subImages && proj.subImages[sIdx]) {
@@ -369,7 +386,16 @@
             
             const sNav = document.createElement('div');
             sNav.className = 'sub-nav';
-            proj.sub.forEach((s, si) => {
+            proj.sub.forEach((subItem, si) => {
+                const sl = document.createElement('a');
+                sl.className = 'sub-link'; 
+                sl.id = `sublink-${i}-${si}`; 
+                sl.href = "#"; 
+                // Qui leggiamo .title invece di s direttamente
+                sl.innerHTML = subItem.title; 
+                sl.onclick = (e) => { e.preventDefault(); navigateTo(2 + i * 4 + si); };
+                sNav.appendChild(sl);
+            });
                 const sl = document.createElement('a');
                 sl.className = 'sub-link'; sl.id = `sublink-${i}-${si}`; sl.href = "#"; sl.innerHTML = s;
                 sl.onclick = (e) => { e.preventDefault(); navigateTo(2 + i * 4 + si); };
@@ -443,8 +469,11 @@
         <p>${data.desc}</p>  </div>
     <div class="image-container"><img src="${data.img}"></div>`;
             } else if (data.type === 'sub') {
-    // HO AGGIUNTO class="sub-title" DENTRO AL TAG <h2>
-    face.innerHTML = `<div class="portfolio-content"><h3>${data.title} / Study</h3><h2 class="sub-title">${data.subTitle}</h2></div><div class="image-container"><img src="${data.img}"></div>`;
+                face.innerHTML = `<div class="portfolio-content">
+                    <h3>${data.title} / Study</h3>
+                    <h2 class="sub-title">${data.subTitle}</h2>
+                    <p>${data.desc || ""}</p> </div>
+                <div class="image-container"><img src="${data.img}"></div>`;
             } else if (data.type === 'final-call') {
                 face.innerHTML = `
                 <div class="centered-container">
