@@ -239,6 +239,19 @@
             .final-links { gap: 10px; }
             .box { width: 90px; height: 90px; font-size: 0.6rem; }
         }
+        /* --- NUOVE REGOLE PER I SOTTOTITOLI --- */
+
+/* Dimensione per PC */
+.sub-title {
+    font-size: 3.5rem !important; /* Era 5rem. Ora è molto più piccolo */
+}
+
+/* Dimensione per Mobile */
+@media (max-width: 768px) {
+    .sub-title {
+        font-size: 3rem !important; /* Era 3rem. Ora è più piccolo */
+    }
+}
     </style>
 </head>
 <body>
@@ -268,7 +281,7 @@
                 desc: "The Clīvio chair is conceived with the meaningful ambition of bringing a fragment of the <b>natural world into everyday life</b>. A cotton rope is discreetly threaded through the structure. Far from being a mere technical requirement, the <b>rope</b> and its <b>fastener</b>, turn this functional element into a refined design accent.",
                 sub: ["Concept", "Mechanism", "Impact"], 
                 img: "clivio-intera.png", 
-                subImages: ["clivio-smontato.jpg", "prova.jpg", "seconda.jpg"], 
+                subImages: ["foresta.jpg", "clivio-smontato.jpg", "seconda.jpg"], 
                 color: [233, 187, 135] 
             },
             { title: "Toori", sub: ["Concept", "Atmosphere", "Detail"], img: "https://picsum.photos/id/30/800/1200", color: [245, 180, 109] },
@@ -402,7 +415,8 @@
         <p>${data.desc}</p>  </div>
     <div class="image-container"><img src="${data.img}"></div>`;
             } else if (data.type === 'sub') {
-                face.innerHTML = `<div class="portfolio-content"><h3>${data.title} / Study</h3><h2>${data.subTitle}</h2></div><div class="image-container"><img src="${data.img}"></div>`;
+    // HO AGGIUNTO class="sub-title" DENTRO AL TAG <h2>
+    face.innerHTML = `<div class="portfolio-content"><h3>${data.title} / Study</h3><h2 class="sub-title">${data.subTitle}</h2></div><div class="image-container"><img src="${data.img}"></div>`;
             } else if (data.type === 'final-call') {
                 face.innerHTML = `
                 <div class="centered-container">
