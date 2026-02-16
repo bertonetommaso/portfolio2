@@ -12,7 +12,7 @@
         }
 
         /* --- CORE SETUP --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; -webkit-tap-highConcept-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; -webkit-tap-highlight-color: transparent; }
         
         html { 
             scroll-snap-type: y mandatory; 
@@ -20,76 +20,78 @@
             touch-action: pan-y; 
             overscroll-behavior: none; 
             height: 100%;
+            width: 100%;
+            overflow-x: hidden;
         }
         
         body { 
             background-color: var(--bg-color); 
             color: var(--fg-color); 
             font-family: 'Inter', sans-serif; 
-            overflow-x: hidden; 
             transition: background-color 0.4s ease; 
             user-select: none; 
             width: 100%; 
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
         @media (max-width: 768px) {
-            body { position: fixed; overflow: hidden; width: 100%; height: 100%; }
+            body { position: fixed; overflow: hidden; width: 100%; height: 100%; top: 0; left: 0; }
         }
 
         /* --- MOBILE ARROWS --- */
         .mobile-nav-arrow {
             position: fixed; left: 20px; z-index: 10020; font-size: 2.5rem;
             color: var(--fg-color); opacity: 0.5; cursor: pointer; display: none;
-            transition: opacity 0.3s, transConcept 0.2s; pointer-events: all; padding: 10px;
+            transition: opacity 0.3s, transform 0.2s; pointer-events: all; padding: 10px;
+            outline: none; -webkit-tap-highlight-color: transparent;
         }
-        .mobile-nav-arrow:active { transConcept: scale(1.2); opacity: 1; }
+        .mobile-nav-arrow:active { transform: scale(1.2); opacity: 1; }
         #mob-up { top: 20px; }
         #mob-down { bottom: 80px; } 
         @media (max-width: 768px) { .mobile-nav-arrow { display: block; } }
 
         /* --- SIGNATURE --- */
         #signature-btn {
-            position: fixed; top: 30px; left: 50%; transConcept: translateX(-50%); z-index: 10005;
-            font-weight: 900; font-size: 1.2rem; letter-spacing: 4px; text-transConcept: uppercase;
-            pointer-events: all; white-space: nowrap; transition: filter 0.4s ease, transConcept 0.3s;
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 10005;
+            font-weight: 900; font-size: 1.2rem; letter-spacing: 4px; text-transform: uppercase;
+            pointer-events: all; white-space: nowrap; transition: filter 0.4s ease, transform 0.3s;
             text-shadow: 0.5px 0px 0px currentColor; 
         }
-        #signature-btn:hover { transConcept: translateX(-50%) scale(1.1); }
+        #signature-btn:hover { transform: translateX(-50%) scale(1.1); }
 
         /* --- CURSORE --- */
         #custom-cursor {
             position: fixed; width: 18px; height: 18px; background-color: white; border-radius: 50%;
             pointer-events: none; z-index: 10006; mix-blend-mode: difference;
-            transition: width 0.3s ease, height 0.3s ease, transConcept 0.1s linear; 
-            transConcept: translate3d(-50%, -50%, 0); left: 0; top: 0;
+            transition: width 0.3s ease, height 0.3s ease, transform 0.1s linear; 
+            transform: translate3d(-50%, -50%, 0); left: 0; top: 0; will-change: transform;
         }
         #custom-cursor.active { width: 22px; height: 22px; animation: wave 0.6s infinite ease-in-out; }
         @media (pointer: coarse), (hover: none) { #custom-cursor { display: none !important; } }
 
         @keyframes wave {
-            0%, 100% { border-radius: 50%; transConcept: translate3d(-50%, -50%, 0) scale(1); }
-            50% { border-radius: 35% 65% 50% 50%; transConcept: translate3d(-51%, -49%, 0) scale(1.05); }
+            0%, 100% { border-radius: 50%; transform: translate3d(-50%, -50%, 0) scale(1); }
+            50% { border-radius: 35% 65% 50% 50%; transform: translate3d(-51%, -49%, 0) scale(1.05); }
         }
 
         .droplet {
             position: fixed; width: 8px; height: 8px; background-color: white; border-radius: 50%; 
-            pointer-events: none; z-index: 10004; mix-blend-mode: difference; transConcept: translate3d(-50%, -50%, 0);
+            pointer-events: none; z-index: 10004; mix-blend-mode: difference; transform: translate3d(-50%, -50%, 0);
         }
 
         /* --- NAVBAR --- */
         nav { position: fixed; z-index: 10000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
         nav.visible { opacity: 1; pointer-events: all; }
 
-        /* PC Style */
         @media (min-width: 769px) {
-            nav { left: 20%; top: 50%; transConcept: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
+            nav { left: 20%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; gap: 15px; }
             .nav-group { display: flex; flex-direction: column; gap: 8px; }
             .sub-nav { max-height: 0; overflow: hidden; padding-left: 37px; display: flex; flex-direction: column; gap: 6px; transition: max-height 0.5s ease; }
             .nav-group.active .sub-nav { max-height: 150px; margin-top: 5px; }
         }
 
-        /* Mobile Style */
         @media (max-width: 768px) {
             nav { 
                 bottom: 0; left: 0; width: 100%; display: flex; flex-direction: row; gap: 20px; 
@@ -98,10 +100,10 @@
                 -ms-overflow-style: none; scrollbar-width: none; 
             }
             nav::-webkit-scrollbar { display: none; }
-            .nav-group { display: flex; flex-direction: column; flex-shrink: 0; transition: transConcept 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+            .nav-group { display: flex; flex-direction: column; flex-shrink: 0; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
             .sub-nav { display: none; }
             .main-link { opacity: 0.4 !important; white-space: nowrap; font-size: 0.85rem !important; }
-            .nav-group.active .main-link { opacity: 1 !important; transConcept: scale(1.1); font-weight: 900; }
+            .nav-group.active .main-link { opacity: 1 !important; transform: scale(1.1); font-weight: 900; }
             .nav-group.active .main-link::after { 
                 content: ''; position: absolute; bottom: -8px; left: 0; width: 100%; height: 2px; 
                 background: var(--fg-color); 
@@ -111,28 +113,28 @@
 
         .main-link { 
             color: var(--fg-color); text-decoration: none; font-size: 0.85rem; font-weight: 900; 
-            text-transConcept: uppercase; letter-spacing: 2px; opacity: 0.2; 
+            text-transform: uppercase; letter-spacing: 2px; opacity: 0.2; 
             display: flex; align-items: center; gap: 12px; transition: 0.4s; position: relative;
         }
         @media (min-width: 769px) {
             .main-link::before { content: ''; width: 12px; height: 2px; background: var(--fg-color); transition: 0.4s; }
             .main-link:hover { opacity: 0.7 !important; }
-            .nav-group.active .main-link { opacity: 1 !important; transConcept: translateX(5px); }
+            .nav-group.active .main-link { opacity: 1 !important; transform: translateX(5px); }
             .nav-group.active .main-link::before { width: 25px; }
         }
 
         .sub-link { 
             color: var(--fg-color); text-decoration: none; font-size: 0.6rem; 
-            text-transConcept: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 1px; opacity: 0.3; transition: 0.3s; font-weight: 500;
         }
-        .sub-link:hover { opacity: 0.8 !important; transConcept: translateX(3px); }
+        .sub-link:hover { opacity: 0.8 !important; transform: translateX(3px); }
         .sub-link.active { opacity: 1 !important; font-weight: 700; }
 
         /* --- TYPOGRAPHY --- */
-        .char { display: inline-block; transition: transConcept 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .char:hover { transConcept: translateY(-4px) rotate(2deg); color: inherit; }
+        .char { display: inline-block; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .char:hover { transform: translateY(-4px) rotate(2deg); color: inherit; }
 
-        h1.monumental { font-weight: 900; line-height: 0.9; text-transConcept: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; }
+        h1.monumental { font-weight: 900; line-height: 0.9; text-transform: uppercase; letter-spacing: -3px; margin: 15px 0; width: 100%; }
         h1.monumental div { white-space: nowrap; }
         @media (min-width: 769px) { h1.monumental { font-size: 7.5rem; letter-spacing: -5px; } }
         @media (max-width: 768px) { h1.monumental { font-size: 10vw; letter-spacing: -1px; margin: 10px 0; width: 95vw; margin-left: auto; margin-right: auto; } }
@@ -145,7 +147,7 @@
         @media (max-width: 768px) { .italic-script-small { font-size: 0.9rem; } }
 
         /* --- SLIDER --- */
-        .horizontal-slider { display: flex; width: 200vw; height: 100vh; transition: transConcept 0.8s cubic-bezier(0.23, 1, 0.32, 1); will-change: transConcept; }
+        .horizontal-slider { display: flex; width: 200vw; height: 100vh; transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1); will-change: transform; }
         .panel { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; }
         .centered-container { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100vw; height: 100vh; padding: 20px; }
 
@@ -167,7 +169,7 @@
         }
 
         /* --- HINTS --- */
-        .hint-vertical { position: absolute; left: 50%; transConcept: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: all; cursor: pointer; z-index: 10010; }
+        .hint-vertical { position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: all; cursor: pointer; z-index: 10010; }
         @media (min-width: 769px) { .hint-vertical { bottom: 5vh; } }
         @media (max-width: 768px) { .hint-vertical { bottom: 18vh; } }
 
@@ -180,38 +182,35 @@
 
         /* --- PORTFOLIO CONTENT --- */
         .portfolio-content { position: absolute; z-index: 2; pointer-events: none; }
-        .image-container { position: absolute; background: #ddd; box-shadow: 0 40px 80px rgba(0,0,0,0.1); z-index: 1; will-change: transConcept; }
+        .image-container { position: absolute; background: #ddd; box-shadow: 0 40px 80px rgba(0,0,0,0.1); z-index: 1; will-change: transform; }
         .image-container img { width: 100%; height: 100%; object-fit: cover; }
 
         @media (min-width: 769px) {
-            .portfolio-content { left: 33vw; top: 50%; transConcept: translateY(-50%); max-width: 450px; text-align: left; }
-            .image-container { right: 10vw; top: 50%; transConcept: translateY(-50%); width: 420px; height: 580px; }
+            .portfolio-content { left: 33vw; top: 50%; transform: translateY(-50%); max-width: 450px; text-align: left; }
+            .image-container { right: 10vw; top: 50%; transform: translateY(-50%); width: 420px; height: 580px; }
             .portfolio-content h3 { font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.6; }
             .portfolio-content h2 { font-size: 5rem; margin-bottom: 1.5rem; }
         }
         @media (max-width: 768px) {
-            .portfolio-content { top: 15%; left: 50%; transConcept: translateX(-50%); width: 85%; text-align: center; }
-            
-            /* --- FIXED: MOBILE IMAGE SIZE (40% SMALLER) --- */
+            .portfolio-content { top: 15%; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; }
             .image-container { 
                 top: 65%; 
-                left: 50%; transConcept: translate(-50%, -50%); 
-                width: 55vw; /* Drastically Reduced from 85vw */
-                height: 22vh; /* Drastically Reduced from 35-50vh */
+                left: 50%; transform: translate(-50%, -50%); 
+                width: 55vw; 
+                height: 22vh; 
                 box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             }
-            
             .portfolio-content h3 { font-size: 0.7rem; margin-bottom: 0.5rem; opacity: 0.6; font-weight: 500; }
             .portfolio-content h2 { font-size: 3rem; margin-bottom: 1rem; line-height: 1; }
             .portfolio-content p { font-size: 0.9rem; max-width: 100%; }
         }
 
         /* --- ENGINE 3D --- */
-        .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; }
-        .cube-wrapper { width: 100%; height: 100%; transConcept-style: preserve-3d; }
+        .scene { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; perspective: 1500px; z-index: 5; pointer-events: none; transform-style: preserve-3d; }
+        .cube-wrapper { width: 100%; height: 100%; transform-style: preserve-3d; }
         .scroll-container { position: relative; z-index: 10; pointer-events: none; }
         .snap-point { height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
-        .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; will-change: transConcept, opacity; pointer-events: none; }
+        .cube-face { width: 100%; height: 100vh; display: flex; position: absolute; top: 0; left: 0; backface-visibility: hidden; opacity: 0; visibility: hidden; will-change: transform, opacity, visibility; pointer-events: none; }
         .cube-face.active-content { pointer-events: all; }
 
         /* --- FINAL BOXES --- */
@@ -220,18 +219,18 @@
             width: 110px; height: 110px; border: 2px solid var(--fg-color); 
             display: flex; align-items: center; justify-content: center; 
             transition: 0.4s ease-out; 
-            font-size: 0.7rem; font-weight: 900; text-transConcept: uppercase; 
+            font-size: 0.7rem; font-weight: 900; text-transform: uppercase; 
             letter-spacing: 1px; color: inherit; text-decoration: none; 
             overflow: hidden; white-space: nowrap; position: relative; 
         }
         
-        .box:hover { transConcept: scale(1.05); background: white !important; color: black !important; border-color: white !important; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); z-index: 10; }
+        .box:hover { transform: scale(1.05); background: white !important; color: black !important; border-color: white !important; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); z-index: 10; }
         .box.copied { width: 300px !important; background: white !important; color: black !important; border-color: white !important; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
 
         .mail-box { width: 110px; }
         @media (min-width: 769px) { .mail-box:hover { width: 360px; } .mail-box:hover .mail-text { opacity: 0; } .mail-box:hover .mail-address { opacity: 1; } }
         
-        .mail-box .mail-address { position: absolute; opacity: 0; font-size: 0.65rem; transition: 0.4s; pointer-events: none; text-transConcept: lowercase; }
+        .mail-box .mail-address { position: absolute; opacity: 0; font-size: 0.65rem; transition: 0.4s; pointer-events: none; text-transform: lowercase; }
         .mail-box.copied .mail-address { opacity: 1; }
         .mail-box.copied .mail-text { opacity: 0; }
 
@@ -274,7 +273,6 @@
             { title: "Toori", sub: ["Concept", "Atmosphere", "Detail"], img: "https://picsum.photos/id/30/800/1200", color: [245, 180, 109] },
             { title: "Where's the Bus?", sub: ["Concept", "Refraction", "Intensity"], img: "https://picsum.photos/id/40/800/1200", color: [244, 220, 0] }
         ];
-        ];
 
         const cursor = document.getElementById('custom-cursor');
         const signature = document.getElementById('signature-btn');
@@ -289,28 +287,23 @@
         let startX = 0, startY = 0, isDragging = false, currentXOffset = 0;
         let currentActiveGroup = null;
         
-        // Mobile Physics
         let targetScrollY = 0;
         let currentScrollY = 0;
         const isMobile = () => window.innerWidth <= 768;
 
-        // --- INIZIO NUOVO CODICE ---
         let flatFaces = [{ type: 'landing', color: [240, 240, 240] }];
         
         projects.forEach((proj, pIdx) => {
-            // 1. Pagina Principale (usa sempre proj.img)
             flatFaces.push({ 
                 type: 'main', 
-                title: proj.title,
-                desc: proj.desc,
+                title: proj.title, 
+                desc: proj.desc, 
                 projectIdx: pIdx, 
                 img: proj.img, 
                 color: proj.color 
             });
 
-            // 2. Sottosezioni (cerca l'immagine specifica)
             proj.sub.forEach((sName, sIdx) => {
-                // Controllo: Esiste una subImage per questo indice? Se sì, usala. Altrimenti usa la principale.
                 let specificImg = proj.img; 
                 if (proj.subImages && proj.subImages[sIdx]) {
                     specificImg = proj.subImages[sIdx];
@@ -321,7 +314,7 @@
                     title: proj.title, 
                     subTitle: sName, 
                     projectIdx: pIdx, 
-                    img: specificImg, // Qui usa l'immagine specifica
+                    img: specificImg, 
                     subIdx: sIdx, 
                     color: proj.color 
                 });
@@ -329,9 +322,7 @@
         });
         
         flatFaces.push({ type: 'final-call', title: "CHECK ME OUT HERE!", color: [10, 10, 10] });
-        // --- FINE NUOVO CODICE ---
 
-        // Sidebar Generation
         projects.forEach((proj, i) => {
             const group = document.createElement('div');
             group.className = 'nav-group'; group.id = `group-${i}`;
@@ -351,7 +342,6 @@
             group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
         });
 
-        // 5th Section: CONTACTS (Manual Add)
         const contactGroup = document.createElement('div');
         contactGroup.className = 'nav-group';
         contactGroup.id = 'group-contacts';
@@ -362,7 +352,6 @@
         contactGroup.appendChild(cLink);
         navbar.appendChild(contactGroup);
 
-        // Generate Faces
         flatFaces.forEach((data, i) => {
             const snap = document.createElement('div'); snap.className = 'snap-point'; ghost.appendChild(snap);
             const face = document.createElement('div'); face.className = 'cube-face';
@@ -392,11 +381,11 @@
                     </div>
                 </div>`;
             } else if (data.type === 'main') {
-    face.innerHTML = `<div class="portfolio-content">
-        <h3>Project Overview</h3>
-        <h2>${data.title}</h2>
-        <p>${data.desc}</p>  </div>
-    <div class="image-container"><img src="${data.img}"></div>`;
+                face.innerHTML = `<div class="portfolio-content">
+                    <h3>Project Overview</h3>
+                    <h2>${data.title}</h2>
+                    <p>${data.desc || 'Industrial Design. Archive 2026.'}</p> </div>
+                <div class="image-container"><img src="${data.img}"></div>`;
             } else if (data.type === 'sub') {
                 face.innerHTML = `<div class="portfolio-content"><h3>${data.title} / Study</h3><h2>${data.subTitle}</h2></div><div class="image-container"><img src="${data.img}"></div>`;
             } else if (data.type === 'final-call') {
@@ -422,7 +411,6 @@
             });
         });
 
-        // --- NAVIGATION ENGINE ---
         function navigateTo(index) {
             const target = index * window.innerHeight;
             if (isMobile()) {
@@ -441,7 +429,6 @@
             if (currentIdx < flatFaces.length - 1) navigateTo(currentIdx + 1);
         };
 
-        // --- SLIDER & TOUCH ---
         const slider = document.getElementById('main-slider');
         
         document.addEventListener('touchmove', (e) => { if (!isDragging) e.preventDefault(); }, { passive: false });
@@ -455,7 +442,7 @@
             spawnDroplets(e.touches[0].clientX, e.touches[0].clientY); 
             if (currentScrollY < vh * 0.5 && Math.abs(diffX) > 10) {
                 isDragging = true;
-                slider.style.transConcept = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px, 0, 0)`;
+                slider.style.transform = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + diffX))}px, 0, 0)`;
             }
         }, { passive: false });
 
@@ -463,26 +450,24 @@
             if (isDragging) { isDragging = false; finishSlide(e.changedTouches[0].clientX); }
         });
 
-        // Mouse (PC)
         document.addEventListener('mousedown', (e) => { if (window.scrollY < vh * 0.5) { isDragging = true; startX = e.clientX; slider.style.transition = 'none'; } });
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX; mouseY = e.clientY;
             cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
-            if (isDragging) { const deltaX = e.clientX - startX; slider.style.transConcept = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px, 0, 0)`; }
+            if (isDragging) { const deltaX = e.clientX - startX; slider.style.transform = `translate3d(${Math.max(-window.innerWidth, Math.min(0, currentXOffset + deltaX))}px, 0, 0)`; }
         });
         document.addEventListener('mouseup', (e) => {
             if (!isDragging) return; isDragging = false; finishSlide(e.clientX);
         });
 
         function finishSlide(endX) {
-            slider.style.transition = 'transConcept 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            slider.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             if (Math.abs(endX - startX) > 100) currentXOffset = (endX - startX < 0) ? -window.innerWidth : 0;
-            slider.style.transConcept = `translate3d(${currentXOffset}px, 0, 0)`;
+            slider.style.transform = `translate3d(${currentXOffset}px, 0, 0)`;
         }
 
-        signature.onclick = () => { navigateTo(0); currentXOffset = -window.innerWidth; slider.style.transition = 'transConcept 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transConcept = `translate3d(${currentXOffset}px, 0, 0)`; };
+        signature.onclick = () => { navigateTo(0); currentXOffset = -window.innerWidth; slider.style.transition = 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)'; slider.style.transform = `translate3d(${currentXOffset}px, 0, 0)`; };
 
-        // --- INTERACTIONS ---
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest('a, #signature-btn, .char, .box, .presentation-rect, .mobile-nav-arrow, .monumental')) cursor.classList.add('active');
         });
@@ -500,7 +485,7 @@
                 const d = document.createElement('div'); d.className = 'droplet'; document.body.appendChild(d);
                 d.style.left = x + 'px'; d.style.top = y + 'px';
                 const angle = Math.random() * Math.PI * 2; const dist = isMobile() ? 15 : 30;
-                d.animate([{ opacity: 1 }, { transConcept: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }], { duration: 500 }).onfinish = () => d.remove();
+                d.animate([{ opacity: 1 }, { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }], { duration: 500 }).onfinish = () => d.remove();
             }
             
             const mailBox = document.elementFromPoint(x, y)?.closest('.mail-box');
@@ -509,10 +494,7 @@
                     const addr = mailBox.querySelector('.mail-address');
                     addr.innerText = 'copied to clipboard!';
                     mailBox.classList.add('copied');
-                    setTimeout(() => { 
-                        addr.innerText = 'bertonetommaso2@gmail.com'; 
-                        mailBox.classList.remove('copied');
-                    }, 2000);
+                    setTimeout(() => { addr.innerText = 'bertonetommaso2@gmail.com'; mailBox.classList.remove('copied'); }, 2000);
                 });
             }
         }
@@ -532,7 +514,6 @@
             const idx = Math.floor(progress);
             const f = progress - idx;
             
-            // Arrow Visibility
             if (isMobile()) {
                 if (idx === 0) { mobUp.style.display = 'none'; mobDown.style.display = 'none'; } 
                 else { mobUp.style.display = 'block'; mobDown.style.display = 'block'; }
@@ -546,25 +527,20 @@
             mobUp.style.color = document.body.style.color;
             mobDown.style.color = document.body.style.color;
 
-            // --- FIXED: AUTO-HIDE PC NAV ON LAST PAGE ---
-            const isAtEnd = sY > (flatFaces.length - 1.2) * vh; // Detect last page
+            const isAtEnd = sY > (flatFaces.length - 1.2) * vh;
             const isPCLanding = sY > vh * 0.4;
             
-            // Show only if NOT at end (for PC) or Always on Mobile if scrolled
-            if (isPCLanding && (!isAtEnd || isMobile())) {
-                navbar.classList.add('visible');
-            } else {
-                navbar.classList.remove('visible');
-            }
+            if (isPCLanding && (!isAtEnd || isMobile())) navbar.classList.add('visible');
+            else navbar.classList.remove('visible');
 
             const fcs = document.querySelectorAll('.cube-face');
             fcs.forEach((face, i) => {
                 const dist = sY - (i * vh);
                 if (Math.abs(dist) < vh * 1.1) {
                     const off = dist / vh;
-                    face.style.display = 'flex';
-                    face.style.transConcept = `translate3d(0, ${-dist}px, ${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
+                    face.style.visibility = 'visible';
                     face.style.opacity = Math.max(0, 1 - Math.pow(Math.abs(off), 2.2));
+                    face.style.transform = `translate3d(0, ${-dist}px, ${Math.abs(off)*-1200}px) rotateX(${off*90}deg)`;
                     
                     if (Math.abs(off) < 0.5) {
                         face.classList.add('active-content'); const d = flatFaces[i];
@@ -574,9 +550,7 @@
                             if (!excitedInterval) excitedInterval = setInterval(() => spawnDroplets(mouseX, mouseY), 150);
                         } else { if (excitedInterval) { clearInterval(excitedInterval); excitedInterval = null; } }
 
-                        // NAVBAR & CONTACTS LOGIC
                         document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('active'));
-                        
                         let activeId = null;
                         if (d.type === 'final-call') activeId = 'group-contacts';
                         else if (d.projectIdx !== undefined) activeId = `group-${d.projectIdx}`;
@@ -590,7 +564,6 @@
                                     const sl = document.getElementById(`sublink-${d.projectIdx}-${d.subIdx}`);
                                     if (sl) sl.classList.add('active');
                                 }
-                                
                                 if (isMobile()) {
                                     const nav = document.getElementById('navbar');
                                     const navWidth = nav.offsetWidth;
@@ -602,7 +575,7 @@
                             }
                         }
                     } else { face.classList.remove('active-content'); }
-                } else { face.style.display = 'none'; face.style.opacity = 0; }
+                } else { face.style.visibility = 'hidden'; face.style.opacity = 0; }
             });
             requestAnimationFrame(update);
         }
