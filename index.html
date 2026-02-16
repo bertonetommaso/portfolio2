@@ -270,7 +270,7 @@
        const projects = [
             { 
                 title: "Viote", 
-                desc: "Viote was designed for Cluster Legno Arredo and Sistema Casa FVG in early 2025, when a contest promoted by ADI and the Friuli region took place. It is a <b>polifunctional object</b>, serving both as a fun <b>toy</b>, and as a <b>photo holder</b>.", 
+                desc: "Viote it's a <b>polifunctional object</b>, serving both as an engaging <b>toy</b>, and as a <b>photo holder</b>.", 
                 sub: [
         { title: "Concept", text: "Questo è il testo di concept hai capito" },
         { title: "Texture", text: "oddio ma assurdo c'è anche texture!" },
@@ -335,19 +335,22 @@
                 color: proj.color 
             });
 
-           // 2. Sottosezioni (MODIFICATO PER LEGGERE IL TESTO)
+          // 2. Sottosezioni
             proj.sub.forEach((subItem, sIdx) => {
-                // Controllo: Esiste una subImage?
                 let specificImg = proj.img; 
                 if (proj.subImages && proj.subImages[sIdx]) {
                     specificImg = proj.subImages[sIdx];
                 }
 
+                // Gestisce sia il nuovo formato (Oggetto) che il vecchio (Stringa)
+                let sTitle = subItem.title ? subItem.title : subItem; // Se è oggetto usa title, altrimenti usa la stringa
+                let sDesc = subItem.text ? subItem.text : "";         // Se è oggetto usa text, altrimenti vuoto
+
                 flatFaces.push({ 
                     type: 'sub', 
                     title: proj.title, 
-                    subTitle: subItem.title, // Legge il titolo dal nuovo oggetto
-                    desc: subItem.text,      // Legge il testo dal nuovo oggetto
+                    subTitle: sTitle, 
+                    desc: sDesc, 
                     projectIdx: pIdx, 
                     img: specificImg, 
                     subIdx: sIdx, 
@@ -386,24 +389,26 @@
             
             const sNav = document.createElement('div');
             sNav.className = 'sub-nav';
+            
+            // --- CORREZIONE QUI SOTTO ---
             proj.sub.forEach((subItem, si) => {
                 const sl = document.createElement('a');
                 sl.className = 'sub-link'; 
                 sl.id = `sublink-${i}-${si}`; 
                 sl.href = "#"; 
-                // Qui leggiamo .title invece di s direttamente
-                sl.innerHTML = subItem.title; 
+                
+                // Controllo: se subItem è un oggetto usa .title, se è solo testo usa subItem stesso
+                // Questo evita la scritta "undefined" sugli altri progetti
+                let label = subItem.title ? subItem.title : subItem;
+                
+                sl.innerHTML = label; 
                 sl.onclick = (e) => { e.preventDefault(); navigateTo(2 + i * 4 + si); };
                 sNav.appendChild(sl);
             });
-                const sl = document.createElement('a');
-                sl.className = 'sub-link'; sl.id = `sublink-${i}-${si}`; sl.href = "#"; sl.innerHTML = s;
-                sl.onclick = (e) => { e.preventDefault(); navigateTo(2 + i * 4 + si); };
-                sNav.appendChild(sl);
-            });
+            // ---------------------------
+
             group.appendChild(mLink); group.appendChild(sNav); navbar.appendChild(group);
         });
-
         // 5th Section: CONTACTS (Manual Add)
         const contactGroup = document.createElement('div');
         contactGroup.className = 'nav-group';
